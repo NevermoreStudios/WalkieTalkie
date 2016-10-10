@@ -1,13 +1,22 @@
 package com.nevermore.walkietalkie;
 
+import android.media.AudioRecord;
+import android.media.AudioTrack;
+
 import java.util.ArrayList;
 
 /**
  * Created by TEMP on 10-Oct-16.
  */
-public class VoiceThread {
-    ArrayList<Byte> Sendbuf;
-    ArrayList<Byte> RecBuffer;
+public class VoiceThread extends  Thread{
+    boolean Runing=true,Recording=false;
+    AudioRecord Input;
+    AudioTrack Output;
+
+    public VoiceThread()
+    {
+
+    }
 
     public boolean init()
     {
@@ -16,12 +25,12 @@ public class VoiceThread {
     }
     public boolean Start()
     {
-
+        Recording=true;
         return  true;
     }
     public boolean Stop()
     {
-
+        Recording=false;
         return true;
     }
 
@@ -34,6 +43,21 @@ public class VoiceThread {
     public void Recieve()
     {
 
+
+    }
+
+    public void KillThread()
+    {
+        Runing=false;
+    }
+
+    public void run()
+    {
+        while(Runing)
+        {
+
+
+        }
 
     }
 }
