@@ -9,4 +9,5 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.nevermore.walkietalkie.MainActivity">
 
+
 </RelativeLayout>
