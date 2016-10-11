@@ -7,11 +7,11 @@ import java.util.ArrayList;
  * Created by TEMP on 10-Oct-16.
  */
 public class Server {
-    InetAddress Addres;
-    int chat_port;
-    int voice_port;
-    ArrayList<ChatChannel> ChatChannels;
-    ArrayList<VoiceChannel> VoiceChanels;
-    int SelectedVoiceChanel;
-    int SelectedChatChanel;
+    InetAddress addres;
+    int chatport;
+    int voiceport;
+    ArrayList<ChatChannel> chatChannels;
+    ArrayList<VoiceChannel> voiceChanels;
+    int selectedVoiceChanel;
+    int selectedChatChanel;
 }

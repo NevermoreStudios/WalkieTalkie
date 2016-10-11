@@ -5,17 +5,15 @@ import android.media.AudioTrack;
 
 import java.util.ArrayList;
 
-/**
- * Created by TEMP on 10-Oct-16.
- */
 public class VoiceThread extends  Thread{
-    boolean Runing=true,Recording=false;
-    AudioRecord Input;
-    AudioTrack Output;
+    boolean running=true,recording=false;
+    AudioRecord input;
+    AudioTrack output;
+    MainActivity parent;
 
-    public VoiceThread()
+    public VoiceThread(MainActivity ma)
     {
-
+        parent =ma;
     }
 
     public boolean init()
@@ -23,37 +21,37 @@ public class VoiceThread extends  Thread{
 
         return  true;
     }
-    public boolean Start()
+    public boolean startRec()
     {
-        Recording=true;
-        return  true;
+        recording=true;
+        return true;
     }
-    public boolean Stop()
+    public boolean stopRec()
     {
-        Recording=false;
+        recording=false;
         return true;
     }
 
-    public void Send()
+    public void send()
     {
 
 
     }
 
-    public void Recieve()
+    public void recieve()
     {
 
 
     }
 
-    public void KillThread()
+    public void kill()
     {
-        Runing=false;
+        running=false;
     }
 
     public void run()
     {
-        while(Runing)
+        while(running)
         {
 
 

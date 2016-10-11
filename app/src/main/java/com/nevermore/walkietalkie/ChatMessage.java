@@ -6,7 +6,7 @@ import java.util.Date;
  * Created by TEMP on 10-Oct-16.
  */
 public class ChatMessage {
-    String Sender;
-    String Message;
-    Date TimeStamp;
+    String sender;
+    String message;
+    Date timestamp;
 }

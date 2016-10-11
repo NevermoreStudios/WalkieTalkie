@@ -1,41 +1,33 @@
 package com.nevermore.walkietalkie;
 
-import android.content.IntentSender;
-
-/**
- * Created by TEMP on 10-Oct-16.
- */
 public class ChatThread extends Thread{
 
-    public ChatMessage Rcieve()
+    public ChatMessage recieve()
     {
         return new ChatMessage();
     }
-    boolean Runing=true;
+    boolean runinng = true;
 
     public ChatThread()
     {
-
+        //
     }
 
-    public void Send(ChatMessage msg)
+    public void send(ChatMessage msg)
     {
-
-
+        //
     }
 
-    public void KillThread()
+    public void kill()
     {
-        Runing=false;
+        runinng = false;
     }
 
     public void run()
     {
-        while(Runing)
+        while(runinng)
         {
-
-
+            //
         }
-
     }
 }
