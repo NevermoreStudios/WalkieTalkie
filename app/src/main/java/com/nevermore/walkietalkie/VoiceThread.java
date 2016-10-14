@@ -21,57 +21,47 @@ public class VoiceThread extends  Thread{
         parent =ma;
     }
 
-    public boolean init()
-    {
-        input = new AudioRecord(MediaRecorder.AudioSource.MIC,44100, AudioFormat.CHANNEL_IN_MONO,AudioFormat.ENCODING_PCM_16BIT,44100);
-        output = new AudioTrack(AudioManager.STREAM_VOICE_CALL,44100,AudioFormat.CHANNEL_OUT_MONO,AudioFormat.ENCODING_PCM_16BIT,44100,AudioTrack.MODE_STREAM);
-
-        return  true;
+    public boolean init() {
+        input = new AudioRecord(MediaRecorder.AudioSource.MIC, 44100, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, 44100);
+        output = new AudioTrack(AudioManager.STREAM_VOICE_CALL, 44100, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, 44100, AudioTrack.MODE_STREAM);
+        return true;
     }
-    public boolean startRec()
-    {
-        recording=true;
+
+    public boolean startRec() {
+        recording = true;
         input.startRecording();
         return true;
     }
-    public boolean stopRec()
-    {
-        recording=false;
+
+    public boolean stopRec() {
+        recording = false;
         input.stop();
         return true;
     }
 
-    public void send(short val)
-    {
-
-
+    public void send(short val) {
+        // TODO: Implement
     }
 
-    public short recieve()
-    {
-
-            return 1;
+    public short recieve() {
+        // TODO: Implement
+        return 1;
     }
 
-    public void kill()
-    {
-        running=false;
+    public void kill() {
+        running = false;
     }
 
-    public void run()
-    {
-        short buff[]= new short[1];
-        short in[]= new short[1];
+    public void run() {
+        short buff[] = new short[1];
+        short in[] = new short[1];
         while(running)
         {
-            if(recording)
-            {
+            if(recording) {
                 output.play();
                 input.read(buff,0,1);
                 send(buff[0]);
-            }
-            else
-            {
+            } else {
                 output.play();
                 //while(1 > 0 )
                 //{
@@ -79,7 +69,6 @@ public class VoiceThread extends  Thread{
                     output.write(in,0,1);
                 //}
             }
-
         }
 
     }
