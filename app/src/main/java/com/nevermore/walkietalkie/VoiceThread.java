@@ -16,8 +16,6 @@ public class VoiceThread extends  Thread{
     AudioTrack output;
     MainActivity parent;
 
-    ArrayList<Short> fakebuff;
-
     public VoiceThread(MainActivity ma)
     {
         parent =ma;
@@ -27,7 +25,7 @@ public class VoiceThread extends  Thread{
     {
         input = new AudioRecord(MediaRecorder.AudioSource.MIC,44100, AudioFormat.CHANNEL_IN_MONO,AudioFormat.ENCODING_PCM_16BIT,44100);
         output = new AudioTrack(AudioManager.STREAM_VOICE_CALL,44100,AudioFormat.CHANNEL_OUT_MONO,AudioFormat.ENCODING_PCM_16BIT,44100,AudioTrack.MODE_STREAM);
-        fakebuff= new ArrayList<Short>();
+
         return  true;
     }
     public boolean startRec()
@@ -46,14 +44,13 @@ public class VoiceThread extends  Thread{
     public void send(short val)
     {
 
-            fakebuff.add(val);
+
     }
 
     public short recieve()
     {
-        short a = fakebuff.get(0);
-        fakebuff.remove(0);
-            return a;
+
+            return 1;
     }
 
     public void kill()
