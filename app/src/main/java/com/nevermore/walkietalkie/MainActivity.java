@@ -1,9 +1,12 @@
 package com.nevermore.walkietalkie;
 
-import android.support.v7.app.AppCompatActivity;
+import android.app.Activity;
 import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity {
+import java.net.InetAddress;
+
+public class MainActivity extends Activity {
+    InetAddress serverAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -11,6 +14,4 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
     }
-
-
 }

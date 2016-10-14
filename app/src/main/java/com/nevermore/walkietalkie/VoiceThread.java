@@ -5,20 +5,21 @@ import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder;
-import android.net.rtp.AudioStream;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class VoiceThread extends  Thread{
-    boolean running=true,recording=false;
+    boolean running = true;
+    boolean recording = false;
     AudioRecord input;
     AudioTrack output;
     MainActivity parent;
+    int selected;
+    ArrayList<VoiceChannel> channels;
+    public static final int PORT = 53730;
 
-    public VoiceThread(MainActivity ma)
-    {
-        parent =ma;
+    public VoiceThread(MainActivity ma) {
+        parent = ma;
     }
 
     public boolean init() {
@@ -55,18 +56,16 @@ public class VoiceThread extends  Thread{
     public void run() {
         short buff[] = new short[1];
         short in[] = new short[1];
-        while(running)
-        {
+        while(running) {
             if(recording) {
                 output.play();
-                input.read(buff,0,1);
+                input.read(buff, 0, 1);
                 send(buff[0]);
             } else {
                 output.play();
-                //while(1 > 0 )
-                //{
-                    in[0]=recieve();
-                    output.write(in,0,1);
+                //while(1 > 0) {
+                    in[0] = recieve();
+                    output.write(in, 0, 1);
                 //}
             }
         }

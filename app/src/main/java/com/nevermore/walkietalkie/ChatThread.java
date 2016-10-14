@@ -1,33 +1,32 @@
 package com.nevermore.walkietalkie;
 
-public class ChatThread extends Thread{
+import java.util.ArrayList;
 
-    public ChatMessage recieve()
-    {
+public class ChatThread extends Thread {
+    
+    public static final int PORT = 53729;
+    boolean running = true;
+    ArrayList<ChatChannel> channels;
+
+    public ChatMessage recieve() {
         return new ChatMessage();
     }
-    boolean runinng = true;
 
-    public ChatThread()
-    {
-        //
+    public ChatThread() {
+        // TODO: Implement
     }
 
-    public void send(ChatMessage msg)
-    {
-        //
+    public void send(ChatMessage msg) {
+        // TODO: Implement
     }
 
-    public void kill()
-    {
-        runinng = false;
+    public void kill() {
+        running = false;
     }
 
-    public void run()
-    {
-        while(runinng)
-        {
-            //
+    public void run() {
+        while(running) {
+            // TODO: Implement
         }
     }
 }
