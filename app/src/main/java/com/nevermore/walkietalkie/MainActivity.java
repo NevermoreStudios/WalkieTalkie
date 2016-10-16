@@ -7,6 +7,10 @@ import java.net.InetAddress;
 
 public class MainActivity extends Activity {
     InetAddress serverAddress;
+    VoiceThread vt;
+    ChatThread ct;
+    String Username;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
