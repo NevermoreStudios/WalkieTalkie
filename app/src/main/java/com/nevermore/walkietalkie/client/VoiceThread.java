@@ -1,16 +1,19 @@
-package com.nevermore.walkietalkie;
+package com.nevermore.walkietalkie.client;
 
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder;
-import android.speech.tts.Voice;
+
+import com.nevermore.walkietalkie.client.MainActivity;
+import com.nevermore.walkietalkie.models.ChatChannel;
+import com.nevermore.walkietalkie.models.ChatMessage;
+import com.nevermore.walkietalkie.models.VoiceChannel;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.Socket;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -52,39 +55,43 @@ public class VoiceThread extends  Thread{
         return true;
     }
 
-    public void tcpMsg(ChatMessage msg)
-    {
-        switch (msg.message.substring(0,5))
-        {
-            case "STRSPK":{channels.get(selected).speaker=msg.message.substring(6);channels.get(selected).state=1;startSpk(); break;}
-            case "STPSPK":{channels.get(selected).state=0;stopSpk(); break;}
+    public void tcpMsg(ChatMessage msg) {
+        VoiceChannel channel = getChannel();
+        // TODO: Ups
+        switch (msg.message.substring(0,5)) {
+            case "STRSPK":
+                channel.set((byte)1, msg.message.substring(6));
+                startSpk();
+                break;
+            case "STPSPK":
+                channel.set((byte)0, null);
+                stopSpk();
+                break;
         }
     }
 
-    public VoiceChannel getChannel()
-    {
+    public VoiceChannel getChannel() {
         return channels.get(selected);
     }
 
-    public void changeChannel(byte id)
-    {
+    public void changeChannel(byte id) {
         selected = id;
-        parent.ct.send(new ChatMessage(selected,"CHGCHN"+id,parent.Username));
+        parent.ct.send(new ChatMessage(selected, "CHGCHN" + id, parent.username));
     }
 
     public boolean startRec() {
         recording = true;
         input.startRecording();
-        parent.ct.send(new ChatMessage(selected,"STRSPK",parent.Username));
-        channels.get(selected).state=2;
+        parent.ct.send(new ChatMessage(selected, "STRSPK", parent.username));
+        getChannel().setState(2);
         return true;
     }
 
     public boolean stopRec() {
         recording = false;
         input.stop();
-        parent.ct.send(new ChatMessage(selected,"STPSPK",parent.Username));
-        channels.get(selected).state=0;
+        parent.ct.send(new ChatMessage(selected, "STPSPK", parent.username));
+        getChannel().setState(0);
         return true;
     }
 
@@ -105,14 +112,15 @@ public class VoiceThread extends  Thread{
         byte[] buf = new byte[3];
         byte[] shorter = new byte[2];
         shorter = shortToBytes(val);
-        buf[0]=selected;
-        buf[1]=shorter[0];
-        buf[2]=shorter[1];
+        buf[0] = selected;
+        buf[1] = shorter[0];
+        buf[2] = shorter[1];
         DatagramPacket packet = new DatagramPacket(buf, buf.length, parent.serverAddress, SERVER_PORT);
         try {
             ioSocket.send(packet);
         } catch (IOException e) {
             e.printStackTrace();
+            // TODO: Error handling
         }
     }
 
@@ -125,12 +133,12 @@ public class VoiceThread extends  Thread{
             ioSocket.receive(packet);
         } catch (IOException e) {
             e.printStackTrace();
+            // TODO: Error handling
         }
-        if(buf[0]==selected)
-        {
+        if(buf[0] == selected) {
             shorter[0] = buf[1];
             shorter[1] = buf[2];
-            in[0]=bytesToShort(shorter);
+            in[0] = bytesToShort(shorter);
             output.write(in, 0, 1);
         }
     }
@@ -145,10 +153,10 @@ public class VoiceThread extends  Thread{
             if(recording) {
                 input.read(buff, 0, 1);
                 send(buff[0]);
-            } else if(speaking){
-                    recieve();
+            } else if(speaking) {
+                recieve();
             }
         }
-
     }
+
 }

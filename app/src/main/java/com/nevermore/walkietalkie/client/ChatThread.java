@@ -1,4 +1,7 @@
-package com.nevermore.walkietalkie;
+package com.nevermore.walkietalkie.client;
+
+import com.nevermore.walkietalkie.models.ChatChannel;
+import com.nevermore.walkietalkie.models.ChatMessage;
 
 import java.util.ArrayList;
 
