@@ -1,4 +1,4 @@
-package com.nevermore.walkietalkie;
+package com.nevermore.walkietalkie.models;
 
 import java.util.ArrayList;
 

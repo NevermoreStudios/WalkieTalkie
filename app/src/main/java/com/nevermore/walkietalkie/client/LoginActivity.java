@@ -1,9 +1,11 @@
-package com.nevermore.walkietalkie;
+package com.nevermore.walkietalkie.client;
 
-import android.support.v7.app.AppCompatActivity;
+import android.app.Activity;
 import android.os.Bundle;
 
-public class LoginActivity extends AppCompatActivity {
+import com.nevermore.walkietalkie.R;
+
+public class LoginActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
