@@ -36,8 +36,8 @@ public class VoiceThread extends  Thread{
     public static final int SERVER_PORT = 53732;
 
     public static final int STATUS_AVAILABLE = 0;
-    public static final int STATUS_AVAILABLE = 0;
-    public static final int STATUS_AVAILABLE = 0;
+    public static final int STATUS_SPEAKING = 1;
+    public static final int STATUS_RECORDING = 2;
 
 
     public VoiceThread(MainActivity ma) {
@@ -69,11 +69,11 @@ public class VoiceThread extends  Thread{
         VoiceChannel channel = getChannel();
         switch (msg.message.substring(0,5)) {
             case "STRSPK":
-                channel.set((byte)1, msg.message.substring(6));
+                channel.set((byte)STATUS_SPEAKING, msg.message.substring(6));
                 startSpk();
                 break;
             case "STPSPK":
-                channel.set((byte)0, null);
+                channel.set((byte)STATUS_AVAILABLE, null);
                 stopSpk();
                 break;
         }
@@ -92,7 +92,7 @@ public class VoiceThread extends  Thread{
         recording = true;
         input.startRecording();
         parent.ct.send(new ChatMessage(selected, "STRSPK", parent.username));
-        getChannel().setState(2);
+        getChannel().setState(STATUS_RECORDING);
         return true;
     }
 
@@ -100,7 +100,7 @@ public class VoiceThread extends  Thread{
         recording = false;
         input.stop();
         parent.ct.send(new ChatMessage(selected, "STPSPK", parent.username));
-        getChannel().setState(0);
+        getChannel().setState(STATUS_AVAILABLE);
         return true;
     }
 
