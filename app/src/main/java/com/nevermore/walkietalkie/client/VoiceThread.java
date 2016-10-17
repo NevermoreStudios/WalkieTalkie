@@ -18,22 +18,31 @@ import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.List;
 
 public class VoiceThread extends  Thread{
-    boolean running = true;
-    boolean recording = false;
-    boolean speaking = false;
-    AudioRecord input;
-    AudioTrack output;
-    MainActivity parent;
-    byte selected;
-    ArrayList<VoiceChannel> channels;
-    DatagramSocket ioSocket;
+    private boolean running = true;
+    private boolean recording = false;
+    private boolean speaking = false;
+    private AudioRecord input;
+    private AudioTrack output;
+    private MainActivity parent;
+    private byte selected;
+    private ArrayList<VoiceChannel> channels;
+    private DatagramSocket ioSocket;
+    private List<String> members = new ArrayList<>();
+
     public static final int PORT = 53730;
     public static final int SERVER_PORT = 53732;
 
+    public static final int STATUS_AVAILABLE = 0;
+    public static final int STATUS_AVAILABLE = 0;
+    public static final int STATUS_AVAILABLE = 0;
+
+
     public VoiceThread(MainActivity ma) {
         parent = ma;
+        init();
     }
 
     public short bytesToShort(byte[] bytes) {
@@ -51,13 +60,13 @@ public class VoiceThread extends  Thread{
             ioSocket = new DatagramSocket(PORT);
         } catch (SocketException e) {
             e.printStackTrace();
+            // TODO: Error handling
         }
         return true;
     }
 
     public void tcpMsg(ChatMessage msg) {
         VoiceChannel channel = getChannel();
-        // TODO: Ups
         switch (msg.message.substring(0,5)) {
             case "STRSPK":
                 channel.set((byte)1, msg.message.substring(6));

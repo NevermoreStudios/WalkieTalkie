@@ -31,7 +31,10 @@ public class Client extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... params) {
         while(running) {
             try {
-                handleMessage(in.readLine());
+                String msg = in.readLine();
+                if(msg != null) {
+                    handleMessage(msg);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
                 // TODO: Error handling
@@ -51,14 +54,19 @@ public class Client extends AsyncTask<Void, Void, Void> {
                 // TODO: Error handling
             } else {
                 try {
-                    int channelID = Integer.parseInt(message.substring(0, index));
+                    byte channelID = Byte.parseByte(message.substring(0, index));
                     String msg = message.substring(index);
+                    parent.sendMsg(name, channelID, msg);
                 } catch(Exception e) {
                     e.printStackTrace();
                     // TODO: Error handling
                 }
             }
         }
+    }
+
+    public void sendMsg(String sender, byte id, String msg) {
+        // TODO: Implement
     }
 
 }

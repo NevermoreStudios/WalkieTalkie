@@ -12,7 +12,8 @@ public class ChatThread extends Thread {
     ArrayList<ChatChannel> channels;
 
     public ChatMessage recieve() {
-        return new ChatMessage();
+        // TODO: Implement
+        return new ChatMessage((byte)0, "", "");
     }
 
     public ChatThread() {
