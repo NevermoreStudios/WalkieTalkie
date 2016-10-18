@@ -15,7 +15,7 @@ out/
 
 # Gradle files
 .gradle/
-build/
+build/	
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -32,15 +32,16 @@ proguard/
 # Android Studio captures folder
 captures/
 
-# Intellij
-*.iml
-.idea/workspace.xml
-.idea/libraries
-
 # Keystore files
 *.jks
 
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild
 
+# Intellij
+*.iml
 .idea/
+
+# Ignore tests
+app/src/androidTest/
+app/src/test/
