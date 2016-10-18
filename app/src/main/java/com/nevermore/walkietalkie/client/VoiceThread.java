@@ -14,9 +14,11 @@ import com.nevermore.walkietalkie.models.VoiceChannel;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.channels.DatagramChannel;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +31,7 @@ public class VoiceThread extends  Thread{
     private MainActivity parent;
     private byte selected;
     private ArrayList<VoiceChannel> channels;
-    private DatagramSocket ioSocket;
+    private DatagramChannel ioSocket;
     private List<String> members = new ArrayList<>();
 
     public static final int PORT = 53730;
@@ -57,8 +59,9 @@ public class VoiceThread extends  Thread{
         output = new AudioTrack(AudioManager.STREAM_VOICE_CALL, 44100, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, 44100, AudioTrack.MODE_STREAM);
         channels = new ArrayList<VoiceChannel>();
         try {
-            ioSocket = new DatagramSocket(PORT);
-        } catch (SocketException e) {
+            ioSocket = DatagramChannel.open();
+            ioSocket.socket().bind(new InetSocketAddress(PORT));
+        } catch (IOException e) {
             e.printStackTrace();
             // TODO: Error handling
         }
@@ -118,15 +121,13 @@ public class VoiceThread extends  Thread{
     }
 
     private void send(short val) {
-        byte[] buf = new byte[3];
+        ByteBuffer buf = ByteBuffer.allocate(3);
         byte[] shorter = new byte[2];
         shorter = shortToBytes(val);
-        buf[0] = selected;
-        buf[1] = shorter[0];
-        buf[2] = shorter[1];
-        DatagramPacket packet = new DatagramPacket(buf, buf.length, parent.serverAddress, SERVER_PORT);
+        buf.put(selected);
+        buf.put(shorter);
         try {
-            ioSocket.send(packet);
+            ioSocket.send(buf,new InetSocketAddress(parent.serverAddress,SERVER_PORT));
         } catch (IOException e) {
             e.printStackTrace();
             // TODO: Error handling
@@ -134,19 +135,18 @@ public class VoiceThread extends  Thread{
     }
 
     private void recieve() {
-        byte[] buf = new byte[3];
+        ByteBuffer buf = ByteBuffer.allocate(3);
         byte[] shorter = new byte[2];
         short[] in = new short[1];
-        DatagramPacket packet = new DatagramPacket(buf, buf.length);
         try {
-            ioSocket.receive(packet);
+            ioSocket.receive(buf);
         } catch (IOException e) {
             e.printStackTrace();
             // TODO: Error handling
         }
-        if(buf[0] == selected) {
-            shorter[0] = buf[1];
-            shorter[1] = buf[2];
+        if(buf.get(0) == selected) {
+            shorter[0] = buf.get(1);
+            shorter[1] = buf.get(2);
             in[0] = bytesToShort(shorter);
             output.write(in, 0, 1);
         }
