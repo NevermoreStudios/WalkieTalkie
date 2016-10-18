@@ -45,14 +45,14 @@ public class VoiceThread extends  Thread{
         init();
     }
 
-    public short bytesToShort(byte[] bytes) {
+    private short bytesToShort(byte[] bytes) {
         return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getShort();
     }
-    public byte[] shortToBytes(short value) {
+    private byte[] shortToBytes(short value) {
         return ByteBuffer.allocate(2).order(ByteOrder.LITTLE_ENDIAN).putShort(value).array();
     }
 
-    public boolean init() {
+    private boolean init() {
         input = new AudioRecord(MediaRecorder.AudioSource.MIC, 44100, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, 44100);
         output = new AudioTrack(AudioManager.STREAM_VOICE_CALL, 44100, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, 44100, AudioTrack.MODE_STREAM);
         channels = new ArrayList<VoiceChannel>();
@@ -104,20 +104,20 @@ public class VoiceThread extends  Thread{
         return true;
     }
 
-    public boolean startSpk() {
+    private boolean startSpk() {
         speaking = true;
         output.play();
         return true;
     }
 
-    public boolean stopSpk() {
+    private boolean stopSpk() {
         speaking = false;
         output.stop();
         output.flush();
         return true;
     }
 
-    public void send(short val) {
+    private void send(short val) {
         byte[] buf = new byte[3];
         byte[] shorter = new byte[2];
         shorter = shortToBytes(val);
@@ -133,7 +133,7 @@ public class VoiceThread extends  Thread{
         }
     }
 
-    public void recieve() {
+    private void recieve() {
         byte[] buf = new byte[3];
         byte[] shorter = new byte[2];
         short[] in = new short[1];
