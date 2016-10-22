@@ -12,7 +12,7 @@ public class ServerService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         st = new ServerThread();
         st.start();
-        vs = new VoiceServer();
+        vs = new VoiceServer(this);
         vs.start();
         return START_STICKY;
     }

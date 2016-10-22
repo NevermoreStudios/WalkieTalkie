@@ -32,7 +32,6 @@ public class VoiceThread extends  Thread{
     private byte selected;
     private ArrayList<VoiceChannel> channels;
     private DatagramChannel ioSocket;
-    private List<String> members = new ArrayList<>();
 
     public static final int PORT = 53730;
     public static final int SERVER_PORT = 53732;
@@ -88,7 +87,7 @@ public class VoiceThread extends  Thread{
 
     public void changeChannel(byte id) {
         selected = id;
-        parent.ct.send(new ChatMessage(selected, "CHGCHN" + id, parent.username));
+        parent.ct.send(new ChatMessage((byte)0, "CHGCHN" + id, parent.username));
     }
 
     public boolean startRec() {
