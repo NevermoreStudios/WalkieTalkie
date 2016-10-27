@@ -6,11 +6,13 @@ import android.os.IBinder;
 
 public class ServerService extends Service {
     ServerThread st;
+    VoiceServer vs;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         st = new ServerThread();
         st.start();
+        vs = new VoiceServer(this);
         return START_STICKY;
     }
 
