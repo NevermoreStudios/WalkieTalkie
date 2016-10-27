@@ -14,6 +14,7 @@ import com.nevermore.walkietalkie.models.VoiceChannel;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
@@ -86,8 +87,13 @@ public class VoiceThread extends  Thread{
     }
 
     public void changeChannel(byte id) {
+        parent.ct.send(new ChatMessage(selected, "LEVCHN", parent.username));
         selected = id;
-        parent.ct.send(new ChatMessage((byte)0, "CHGCHN" + id, parent.username));
+        parent.ct.send(new ChatMessage(selected, "JOICHN", parent.username));
+    }
+
+    public void leaveChannel() {
+        parent.ct.send(new ChatMessage(selected, "LEVCHN", parent.username));
     }
 
     public boolean startRec() {
@@ -126,7 +132,7 @@ public class VoiceThread extends  Thread{
         buf.put(selected);
         buf.put(shorter);
         try {
-            ioSocket.send(buf,new InetSocketAddress(parent.serverAddress,SERVER_PORT));
+            ioSocket.send(buf,new InetSocketAddress(InetAddress.getByName("255.255.255.255"),PORT));
         } catch (IOException e) {
             e.printStackTrace();
             // TODO: Error handling
