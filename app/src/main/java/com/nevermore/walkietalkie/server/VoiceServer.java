@@ -63,12 +63,13 @@ public class VoiceServer extends Thread{
                     parrent.st.sendMsg("",msg.getChannel(),msg.message,name);//not yet implemented
                 }
                 break;
-            case "CHGCHN":
-                if(msg.getChannel() != 0)
-                {
-                    channels.get(msg.getChannel()).members.remove(msg.getSender());
-                }
-                channels.get(Integer.parseInt(msg.message.substring(6))).members.add(msg.getSender());
+            case "JOICHN":
+                channels.get(msg.getChannel()).members.add(msg.getSender());
+                parrent.st.Update();//not yet implemented
+                break;
+
+            case "LEVCHN":
+                channels.get(msg.getChannel()).members.remove(msg.getSender());
                 parrent.st.Update();//not yet implemented
                 break;
         }
@@ -77,19 +78,6 @@ public class VoiceServer extends Thread{
 
     public void run()
     {
-        ByteBuffer buf = ByteBuffer.allocate(3);
-        while(runing)
-        {
-            try {
-                ioSocket.receive(buf);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                ioSocket.send(buf,new InetSocketAddress(InetAddress.getByName("255.255.255.255"),PORT));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+
     }
 }

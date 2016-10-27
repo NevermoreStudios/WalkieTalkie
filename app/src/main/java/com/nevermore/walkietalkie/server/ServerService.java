@@ -13,7 +13,6 @@ public class ServerService extends Service {
         st = new ServerThread();
         st.start();
         vs = new VoiceServer(this);
-        vs.start();
         return START_STICKY;
     }
 
