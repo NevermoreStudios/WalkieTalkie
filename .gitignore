@@ -53,3 +53,4 @@ captures/
 >>>>>>> master
 app/src/androidTest/
 app/src/test/
+build/intermediates/dex-cache/cache.xml
