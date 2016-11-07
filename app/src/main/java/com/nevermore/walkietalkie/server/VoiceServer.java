@@ -15,9 +15,8 @@ import java.util.ArrayList;
 
 public class VoiceServer extends Thread{
 
-    public VoiceServer(ServerService parr)
-    {
-     parrent=parr;
+    public VoiceServer(ServerService parr) {
+        parent = parr;
         try {
             ioSocket = DatagramChannel.open();
             ioSocket.socket().bind(new InetSocketAddress(SERVER_PORT));
@@ -33,13 +32,13 @@ public class VoiceServer extends Thread{
     public static final int STATUS_SPEAKING = 1;
     public static final int STATUS_RECORDING = 2;
 
-    private boolean runing=true;
+    private boolean running = true;
     private DatagramChannel ioSocket;
-    ArrayList<VoiceChannel> channels= new ArrayList<VoiceChannel>();
-    ServerService parrent;
-    public void Kill()
-    {
-        runing = false;
+    private ArrayList<VoiceChannel> channels = new ArrayList<>();
+    private ServerService parent;
+
+    public void kill() {
+        running = false;
     }
 
     private short bytesToShort(byte[] bytes) {
@@ -50,34 +49,23 @@ public class VoiceServer extends Thread{
     }
 
     public void tcpMsg(ChatMessage msg) {
-        switch (msg.message.substring(0,5)) {
+        switch (msg.message.substring(0, 5)) {
             case "STRSPK":
-                for (String name:channels.get(msg.getChannel()).members)
-                {
-                parrent.st.sendMsg("",msg.getChannel(),msg.message,name);//not yet implemented
-                }
+                parent.st.sendVoiceMsg("", msg.getChannel(), msg.message);
                 break;
             case "STPSPK":
-                for (String name:channels.get(msg.getChannel()).members)
-                {
-                    parrent.st.sendMsg("",msg.getChannel(),msg.message,name);//not yet implemented
-                }
+                parent.st.sendVoiceMsg("", msg.getChannel(), msg.message);
                 break;
             case "JOICHN":
                 channels.get(msg.getChannel()).members.add(msg.getSender());
-                parrent.st.Update();//not yet implemented
+                //parent.st.Update();//not yet implemented
                 break;
 
             case "LEVCHN":
                 channels.get(msg.getChannel()).members.remove(msg.getSender());
-                parrent.st.Update();//not yet implemented
+                //parent.st.Update();//not yet implemented
                 break;
         }
     }
 
-
-    public void run()
-    {
-
-    }
 }

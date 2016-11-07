@@ -10,7 +10,7 @@ public class VoiceChannel extends Channel {
 
     private byte state = 0;
     private String speaker;
-    public List<String> members = new ArrayList<>();
+    public List<String> members = new ArrayList<String>();
 
     public VoiceChannel(byte id,String name)
     {

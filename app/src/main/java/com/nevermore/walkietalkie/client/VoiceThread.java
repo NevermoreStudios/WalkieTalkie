@@ -23,13 +23,14 @@ import java.nio.channels.DatagramChannel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VoiceThread extends  Thread{
+public class VoiceThread extends Thread {
+
     private boolean running = true;
     private boolean recording = false;
     private boolean speaking = false;
     private AudioRecord input;
     private AudioTrack output;
-    private MainActivity parent;
+    private ChatService parent;
     private byte selected;
     private ArrayList<VoiceChannel> channels;
     private DatagramChannel ioSocket;
@@ -42,14 +43,16 @@ public class VoiceThread extends  Thread{
     public static final int STATUS_RECORDING = 2;
 
 
-    public VoiceThread(MainActivity ma) {
-        parent = ma;
+    public VoiceThread(ChatService parent, ArrayList<VoiceChannel> channels) {
+        this.parent = parent;
+        this.channels = channels;
         init();
     }
 
     private short bytesToShort(byte[] bytes) {
         return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getShort();
     }
+
     private byte[] shortToBytes(short value) {
         return ByteBuffer.allocate(2).order(ByteOrder.LITTLE_ENDIAN).putShort(value).array();
     }
@@ -70,15 +73,14 @@ public class VoiceThread extends  Thread{
 
     public void tcpMsg(ChatMessage msg) {
         VoiceChannel channel = getChannel();
-        switch (msg.message.substring(0,5)) {
-            case "STRSPK":
-                channel.set((byte)STATUS_SPEAKING, msg.message.substring(6));
-                startSpk();
-                break;
-            case "STPSPK":
-                channel.set((byte)STATUS_AVAILABLE, null);
-                stopSpk();
-                break;
+        String s = msg.message.substring(0, 5);
+        // jebiga lazo nece da se kompajlira
+        if (s.equals("STRSPK")) {
+            channel.set((byte) STATUS_SPEAKING, msg.message.substring(6));
+            startSpk();
+        } else if (s.equals("STPSPK")) {
+            channel.set((byte) STATUS_AVAILABLE, null);
+            stopSpk();
         }
     }
 
