@@ -7,6 +7,58 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".client.LoginActivity">
+    tools:context=".client.LoginActivity"
+>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/login_text"
+        android:text="@string/login_text_text"
+        android:textSize="20sp"
+    />
+
+    <EditText
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:id="@+id/login_username"
+        android:layout_below="@+id/login_text"
+        android:hint="@string/login_username_hint"
+    />
+
+    <EditText
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:id="@+id/login_serverip"
+        android:layout_below="@+id/login_username"
+        android:hint="@string/login_serverip_hint"
+    />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/login_connect"
+        android:layout_below="@+id/login_serverip"
+        android:text="@string/login_connect_text"
+        android:onClick="clickLogin"
+    />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/login_discover"
+        android:layout_below="@+id/login_connect"
+        android:text="@string/login_discover_text"
+        android:onClick="clickDiscover"
+    />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/login_startserver"
+        android:layout_below="@+id/login_discover"
+        android:text="@string/login_startserver_text"
+        android:onClick="clickStartserver"
+    />
 
 </RelativeLayout>

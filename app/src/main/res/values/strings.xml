@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">WalkieTalkie</string>
+    <string name="login_text_text">Enter server IP below or use the \"Discover\" button to connect to the nearby server</string>
+    <string name="login_serverip_hint">Server IP</string>
+    <string name="login_connect_text">Connect</string>
+    <string name="login_username_hint">Username</string>
+    <string name="login_discover_text">Discover</string>
+    <string name="login_startserver_text">Start server</string>
 </resources>

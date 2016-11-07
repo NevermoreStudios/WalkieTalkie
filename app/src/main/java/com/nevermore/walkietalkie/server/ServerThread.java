@@ -17,7 +17,7 @@ public class ServerThread extends Thread {
     boolean running = true;
     ServerSocket server;
     DatagramSocket voiceServer;
-    List<Client> clients = new ArrayList<Client>();
+    List<Client> clients = new ArrayList<>();
     List<ChatChannel> chatChannels = new ArrayList<>();
     List<VoiceChannel> voiceChannels = new ArrayList<>();
 
@@ -47,6 +47,26 @@ public class ServerThread extends Thread {
             }
         }
         // TODO: Implement after we implement channels
+    }
+
+    private Client getClientByNickname(String nick) {
+        for(Client c : clients) {
+            if(nick.equals(c.getName())) {
+                return c;
+            }
+        }
+        return null;
+    }
+
+    public void sendVoiceMsg(String sender, byte id, String msg) {
+        if(voiceChannels.get(id) != null) {
+            for(String nick : voiceChannels.get(id).members) {
+                Client c = getClientByNickname(nick);
+                if(c != null) {
+                    c.sendMsg(sender, id, msg);
+                }
+            }
+        }
     }
 
     public void kill() {
