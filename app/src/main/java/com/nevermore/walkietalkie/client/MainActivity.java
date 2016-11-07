@@ -8,6 +8,8 @@ import android.widget.RelativeLayout;
 
 import com.nevermore.walkietalkie.R;
 
+import java.net.InetAddress;
+
 public class MainActivity extends Activity {
     InetAddress serverAddress;
     VoiceThread vt;

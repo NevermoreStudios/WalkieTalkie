@@ -20,6 +20,7 @@ public class VoiceServer extends Thread{
         try {
             ioSocket = DatagramChannel.open();
             ioSocket.socket().bind(new InetSocketAddress(SERVER_PORT));
+            ioSocket.configureBlocking(false);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -58,12 +59,12 @@ public class VoiceServer extends Thread{
                 break;
             case "JOICHN":
                 channels.get(msg.getChannel()).members.add(msg.getSender());
-                //parent.st.Update();//not yet implemented
+                parent.st.sendVoiceMsg(msg.getSender(), msg.getChannel(), "JOICHN");
                 break;
 
             case "LEVCHN":
                 channels.get(msg.getChannel()).members.remove(msg.getSender());
-                //parent.st.Update();//not yet implemented
+                parent.st.sendVoiceMsg(msg.getSender(), msg.getChannel(), "LEVCHN");
                 break;
         }
     }

@@ -64,6 +64,7 @@ public class VoiceThread extends Thread {
         try {
             ioSocket = DatagramChannel.open();
             ioSocket.socket().bind(new InetSocketAddress(PORT));
+            ioSocket.configureBlocking(false);
         } catch (IOException e) {
             e.printStackTrace();
             // TODO: Error handling
@@ -74,14 +75,20 @@ public class VoiceThread extends Thread {
     public void tcpMsg(ChatMessage msg) {
         VoiceChannel channel = getChannel();
         String s = msg.message.substring(0, 5);
-        // jebiga lazo nece da se kompajlira
         if (s.equals("STRSPK")) {
+            if(msg.message.substring(6)!=parent.username){
             channel.set((byte) STATUS_SPEAKING, msg.message.substring(6));
             startSpk();
+            }
         } else if (s.equals("STPSPK")) {
             channel.set((byte) STATUS_AVAILABLE, null);
             stopSpk();
+        }else if (s.equals("JOICHN") && msg.getSender() != parent.username) {
+            channels.get(msg.getChannel()).members.add(msg.getSender());
+        }else if (s.equals("LEVCHN") && msg.getSender() != parent.username) {
+            channels.get(msg.getChannel()).members.remove(msg.getSender());
         }
+
     }
 
     public VoiceChannel getChannel() {
@@ -90,12 +97,15 @@ public class VoiceThread extends Thread {
 
     public void changeChannel(byte id) {
         parent.ct.send(new ChatMessage(selected, "LEVCHN", parent.username));
+        channels.get(selected).members.remove(parent.username);
         selected = id;
         parent.ct.send(new ChatMessage(selected, "JOICHN", parent.username));
+        channels.get(selected).members.add(parent.username);
     }
 
     public void leaveChannel() {
         parent.ct.send(new ChatMessage(selected, "LEVCHN", parent.username));
+        channels.get(selected).members.remove(parent.username);
     }
 
     public boolean startRec() {
