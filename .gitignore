@@ -15,7 +15,7 @@ out/
 
 # Gradle files
 .gradle/
-build/
+build/	
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -42,6 +42,15 @@ captures/
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild
 
+<<<<<<< HEAD
+# Intellij
+*.iml
+.idea/
+
+# Ignore tests
+=======
 # Test projects
+>>>>>>> master
 app/src/androidTest/
 app/src/test/
+build/intermediates/dex-cache/cache.xml
