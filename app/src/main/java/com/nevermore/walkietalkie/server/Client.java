@@ -69,4 +69,8 @@ public class Client extends AsyncTask<Void, Void, Void> {
         // TODO: Implement
     }
 
+    public String getName() {
+        return name;
+    }
+
 }

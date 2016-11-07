@@ -32,16 +32,24 @@ proguard/
 # Android Studio captures folder
 captures/
 
+# Intellij
+*.iml
+.idea/
+
 # Keystore files
 *.jks
 
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild
 
+<<<<<<< HEAD
 # Intellij
 *.iml
 .idea/
 
 # Ignore tests
+=======
+# Test projects
+>>>>>>> master
 app/src/androidTest/
 app/src/test/

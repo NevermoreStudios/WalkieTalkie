@@ -8,8 +8,6 @@ import android.widget.RelativeLayout;
 
 import com.nevermore.walkietalkie.R;
 
-import java.net.InetAddress;
-
 public class MainActivity extends Activity {
     InetAddress serverAddress;
     VoiceThread vt;
@@ -21,6 +19,7 @@ public class MainActivity extends Activity {
     RelativeLayout mContentFrame;
     Button mButton;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +30,7 @@ public class MainActivity extends Activity {
         mContentFrame=(RelativeLayout) findViewById(R.id.content_frame);
         mButton = (Button) findViewById(R.id.SendButton);
     }
+
 
     private void Click()
     {
