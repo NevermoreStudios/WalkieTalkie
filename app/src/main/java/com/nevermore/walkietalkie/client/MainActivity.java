@@ -1,43 +1,135 @@
 package com.nevermore.walkietalkie.client;
 
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.ServiceConnection;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.provider.Settings;
 import android.support.v4.widget.DrawerLayout;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import com.nevermore.walkietalkie.R;
+import com.nevermore.walkietalkie.models.ChatMessage;
 
 import java.net.InetAddress;
 
 public class MainActivity extends Activity {
-    InetAddress serverAddress;
-    VoiceThread vt;
-    ChatThread ct;
-    String username;
-    DrawerLayout mDrawerLayout;
-    RelativeLayout mLeftDrawer;
-    RelativeLayout mRightDrawer;
-    RelativeLayout mContentFrame;
-    Button mButton;
 
+    private String username;
+    private boolean bound;
+    Button mic;
+    Button send;
+    View line;
+    EditText input;
+    ListView history;
+    boolean micro=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mDrawerLayout=(DrawerLayout) findViewById(R.id.drawer_layout);
-        mRightDrawer=(RelativeLayout) findViewById(R.id.left_drawer);
-        mLeftDrawer=(RelativeLayout) findViewById(R.id.right_drawer);
-        mContentFrame=(RelativeLayout) findViewById(R.id.content_frame);
-        mButton = (Button) findViewById(R.id.SendButton);
+        mic= (Button) findViewById(R.id.main_voice);
+        mic.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                    onClickVoice();
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    onReleaseVoice();
+                }
+                return false;
+            }
+        });
+        send = (Button) findViewById(R.id.main_send);
+        line = findViewById(R.id.main_view);
+        history = (ListView) findViewById(R.id.main_history_list);
+        input = (EditText) findViewById(R.id.main_input);
     }
 
 
-    private void Click()
-    {
+    public void onClickSend(View view) {
+        // This is called when send button is clicked
+    }
 
+    private void onClickVoice() {
+        // This is called when voice button is clicked
+    }
+
+    private void onReleaseVoice() {
+        // This is called when voice button is clicked
+    }
+
+    public void messageRecieved(ChatMessage message) {
 
     }
+
+    private void hideMic() {
+        Resources r = getResources();
+        RelativeLayout.LayoutParams sendparams,micparams,lineparams,inputparams,historyparams;
+        sendparams=(RelativeLayout.LayoutParams)send.getLayoutParams();
+        micparams=(RelativeLayout.LayoutParams)mic.getLayoutParams();
+        lineparams=(RelativeLayout.LayoutParams)line.getLayoutParams();
+        inputparams=(RelativeLayout.LayoutParams)input.getLayoutParams();
+        historyparams=(RelativeLayout.LayoutParams)history.getLayoutParams();
+        sendparams.setMargins(0,0,0,0);
+        micparams.height=0;
+        lineparams.setMargins(0,0,0, (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, r.getDisplayMetrics()));
+        inputparams.setMargins(0,0,0,0);
+        historyparams.setMargins(0,0,0, (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, r.getDisplayMetrics()));
+        send.setLayoutParams(sendparams);
+        mic.setLayoutParams(micparams);
+        line.setLayoutParams(lineparams);
+        input.setLayoutParams(inputparams);
+        history.setLayoutParams(historyparams);
+    }
+
+    private void showMic(){
+        Resources r = getResources();
+        RelativeLayout.LayoutParams sendparams,micparams,lineparams,inputparams,historyparams;
+        sendparams=(RelativeLayout.LayoutParams)send.getLayoutParams();
+        micparams=(RelativeLayout.LayoutParams)mic.getLayoutParams();
+        lineparams=(RelativeLayout.LayoutParams)line.getLayoutParams();
+        inputparams=(RelativeLayout.LayoutParams)input.getLayoutParams();
+        historyparams=(RelativeLayout.LayoutParams)history.getLayoutParams();
+        sendparams.setMargins(0,0,0,(int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, r.getDisplayMetrics()));
+        micparams.height=(int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, r.getDisplayMetrics());
+        lineparams.setMargins(0,0,0,(int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, r.getDisplayMetrics()));
+        inputparams.setMargins(0,0,0,(int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, r.getDisplayMetrics()));
+        historyparams.setMargins(0,0,0,(int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, r.getDisplayMetrics()));
+        send.setLayoutParams(sendparams);
+        mic.setLayoutParams(micparams);
+        line.setLayoutParams(lineparams);
+        input.setLayoutParams(inputparams);
+        history.setLayoutParams(historyparams);
+    }
+
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+
+        ChatService service;
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            ChatService.ChatBinder binder = (ChatService.ChatBinder) service;
+            bound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            bound = false;
+        }
+
+    };
+
+
 
 }

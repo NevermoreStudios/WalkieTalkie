@@ -13,6 +13,7 @@ public class ServerService extends Service {
         st = new ServerThread();
         st.start();
         vs = new VoiceServer(this);
+        vs.start();
         return START_STICKY;
     }
 
@@ -28,6 +29,7 @@ public class ServerService extends Service {
 
     @Override
     public void onDestroy() {
-    st.kill();
+        st.kill();
+        vs.kill();
     }
 }

@@ -7,35 +7,26 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.nevermore.walkietalkie.R;
+import com.nevermore.walkietalkie.server.ServerService;
 
 public class LoginActivity extends Activity {
 
     private EditText username, serverip;
 
-    public static final String EXTRA_USERNAME = "Vrabac je instanca";
-    public static final String EXTRA_SERVERIP = "Svemoguci Stojan";
+    public static final String EXTRA_USERNAME = "com.nevermore.walkietalkie.extra.username";
+    public static final String EXTRA_SERVERIP = "com.nevermore.walkietalkie.extra.serverip";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initUI();
-        registerReceiver(new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(LoginActivity.this, "lol", Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-        }, new IntentFilter("lolololo"));
     }
 
     private void initUI() {
@@ -50,15 +41,16 @@ public class LoginActivity extends Activity {
         Intent data = new Intent(this, ChatService.class);
         data.putExtra(EXTRA_USERNAME, usernameText);
         data.putExtra(EXTRA_SERVERIP, serveripText);
-        startService(new Intent(this, ChatService.class));
+        startService(data);
+        startActivity(new Intent(this,MainActivity.class));
     }
 
     public void clickDiscover(View view) {
-        // This method is called when "Discover" button is clicked
+        startService(new Intent(this, DiscoveryService.class));
     }
 
     public void clickStartserver(View view) {
-        // This method is called when "Start server" button is clicked
+        startService(new Intent(this, ServerService.class));
     }
 
 }

@@ -23,6 +23,10 @@
             android:name=".server.ServerService"
             android:exported="false"
 		/>
+        <service
+            android:name=".client.ChatService"
+            android:exported="false"
+            />
     </application>
 
 </manifest>

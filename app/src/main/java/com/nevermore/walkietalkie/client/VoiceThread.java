@@ -16,6 +16,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -153,20 +154,22 @@ public class VoiceThread extends Thread {
 
     private void recieve() {
         ByteBuffer buf = ByteBuffer.allocate(3);
+        SocketAddress ina=null;
         byte[] shorter = new byte[2];
         short[] in = new short[1];
         try {
-            ioSocket.receive(buf);
+           ina= ioSocket.receive(buf);
         } catch (IOException e) {
             e.printStackTrace();
             // TODO: Error handling
         }
+        if(ina != null){
         if(buf.get(0) == selected) {
             shorter[0] = buf.get(1);
             shorter[1] = buf.get(2);
             in[0] = bytesToShort(shorter);
             output.write(in, 0, 1);
-        }
+        }}
     }
 
     public void kill() {

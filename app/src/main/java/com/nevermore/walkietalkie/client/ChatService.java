@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+import android.widget.Toast;
 
 import com.nevermore.walkietalkie.models.VoiceChannel;
 
@@ -28,9 +29,10 @@ public class ChatService extends Service {
     }
 
     @Override
-    public void onCreate() {
-        super.onCreate();
-        sendBroadcast(new Intent("lolololo"));
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        System.out.println(intent.getStringExtra(LoginActivity.EXTRA_USERNAME));
+        System.out.println(intent.getStringExtra("adlsakjdkauidhaksljdhsa"));
+        return super.onStartCommand(intent, flags, startId);
     }
 
     @Override

@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.InterfaceAddress;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -69,4 +71,30 @@ public class VoiceServer extends Thread{
         }
     }
 
+    @Override
+    public void run() {
+        SocketAddress ioa=null;
+        ByteBuffer buf = ByteBuffer.allocate(4);
+        ByteBuffer buff = ByteBuffer.allocate(3);
+        buff.put("ACK".getBytes());
+        while(running)
+        {
+            try {
+                ioa= ioSocket.receive(buf);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if(ioa !=null)
+            {
+                String msg = new String(buf.array());
+                if(msg.equals("DISC")){
+                    try {
+                        ioSocket.send(buff,ioa);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
 }

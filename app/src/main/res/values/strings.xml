@@ -6,4 +6,5 @@
     <string name="login_username_hint">Username</string>
     <string name="login_discover_text">Discover</string>
     <string name="login_startserver_text">Start server</string>
+    <string name="main_input_hint">Write message</string>
 </resources>
