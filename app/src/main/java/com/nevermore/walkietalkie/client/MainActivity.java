@@ -68,15 +68,15 @@ public class MainActivity extends Activity {
         line = findViewById(R.id.main_view);
         history = (ListView) findViewById(R.id.main_history_list);
         input = (EditText) findViewById(R.id.main_input);
-        adapter = new ArrayAdapter<>(this, R.layout.message_item, listItems);
-        history.setAdapter(adapter);
-        history.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        history.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "u wot m8", Toast.LENGTH_LONG).show();
-            }
-        });
+        //adapter = new ArrayAdapter<>(this, R.layout.message_item, listItems);
+        //history.setAdapter(adapter);
+        //history.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        //history.setOnClickListener(new View.OnClickListener(){
+            //@Override
+            //public void onClick(View v) {
+                //Toast.makeText(MainActivity.this, "u wot m8", Toast.LENGTH_LONG).show();
+            //}
+        //});
     }
 
 

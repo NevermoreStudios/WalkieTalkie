@@ -10,7 +10,7 @@ public class ServerService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        st = new ServerThread();
+        st = new ServerThread(this);
         st.start();
         vs = new VoiceServer(this);
         vs.start();

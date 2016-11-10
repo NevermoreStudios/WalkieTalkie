@@ -42,11 +42,14 @@ public class LoginActivity extends Activity {
         data.putExtra(EXTRA_USERNAME, usernameText);
         data.putExtra(EXTRA_SERVERIP, serveripText);
         startService(data);
-        startActivity(new Intent(this,MainActivity.class));
+        startActivity(new Intent(this,MainActivity.class));//TODO: remove this
     }
 
     public void clickDiscover(View view) {
-        startService(new Intent(this, DiscoveryService.class));
+        String usernameText = username.getText().toString();
+        Intent data = new Intent(this, DiscoveryService.class);
+        data.putExtra(EXTRA_USERNAME, usernameText);
+        startService(data);
     }
 
     public void clickStartserver(View view) {

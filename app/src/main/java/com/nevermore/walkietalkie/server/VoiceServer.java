@@ -37,7 +37,7 @@ public class VoiceServer extends Thread{
 
     private boolean running = true;
     private DatagramChannel ioSocket;
-    private ArrayList<VoiceChannel> channels = new ArrayList<>();
+    public ArrayList<VoiceChannel> channels = new ArrayList<>();
     private ServerService parent;
 
     public void kill() {
@@ -49,6 +49,16 @@ public class VoiceServer extends Thread{
     }
     private byte[] shortToBytes(short value) {
         return ByteBuffer.allocate(2).order(ByteOrder.LITTLE_ENDIAN).putShort(value).array();
+    }
+
+    public void CreateChannel(byte id,String name){
+        channels.add(new VoiceChannel(id,name));
+        //parent.Update();//TODO: send new serialized server data to clients
+    }
+
+    public void DeleteChannel(byte id,String name){
+        channels.remove(new VoiceChannel(id,name));
+        //parent.Update();//TODO: send new serialized server data to clients
     }
 
     public void tcpMsg(ChatMessage msg) {

@@ -20,8 +20,10 @@ public class ServerThread extends Thread {
     List<Client> clients = new ArrayList<>();
     List<ChatChannel> chatChannels = new ArrayList<>();
     List<VoiceChannel> voiceChannels = new ArrayList<>();
+    ServerService parent;
 
-    public ServerThread() {
+    public ServerThread(ServerService parr) {
+        parent=parr;
         initSocket();
         initChannels();
     }
@@ -59,6 +61,7 @@ public class ServerThread extends Thread {
     }
 
     public void sendVoiceMsg(String sender, byte id, String msg) {
+        updateVoiceChannels();
         if(voiceChannels.get(id) != null) {
             for(String nick : voiceChannels.get(id).members) {
                 Client c = getClientByNickname(nick);
@@ -67,6 +70,20 @@ public class ServerThread extends Thread {
                 }
             }
         }
+    }
+
+    private void updateVoiceChannels() {
+        voiceChannels=parent.vs.channels;
+    }
+
+    public void CreateChannel(byte id,String name){
+        chatChannels.add(new ChatChannel(id,name));
+        //parent.Update();//TODO: send new serialized server data to clients
+    }
+
+    public void DeleteChannel(byte id,String name){
+        chatChannels.remove(new ChatChannel(id,name));
+        //parent.Update();//TODO: send new serialized server data to clients
     }
 
     public void kill() {
