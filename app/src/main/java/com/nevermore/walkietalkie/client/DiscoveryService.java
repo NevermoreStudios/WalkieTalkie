@@ -27,17 +27,16 @@ public class DiscoveryService extends Service {
             e.printStackTrace();
         }
         ByteBuffer buf = ByteBuffer.allocate(3);
-        InetSocketAddress ina=null;
+        InetSocketAddress ina = null;
         try {
-            ina= (InetSocketAddress) ioSocket.receive(buf);
+            ina = (InetSocketAddress) ioSocket.receive(buf);
         } catch (IOException e) {
             e.printStackTrace();
             // TODO: Error handling
         }
         if(ina != null) {
             String text = new String(buf.array());
-            if(text.equals("ACK"))
-            {
+            if(text.equals("ACK")) {
                 Intent data = new Intent(this, ChatService.class);
                 data.putExtra(EXTRA_USERNAME,intent.getStringExtra(LoginActivity.EXTRA_USERNAME));
                 data.putExtra(EXTRA_SERVERIP,ina.getAddress().toString() );

@@ -48,6 +48,10 @@ public class ChatService extends Service {
         vt = new VoiceThread(this, channels);
     }
 
+    public void sendVoiceMsg(byte id, String sender, String message) {
+        // TODO: Implement
+    }
+
     public Socket getConnection() {
         return connection;
     }
