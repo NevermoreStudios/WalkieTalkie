@@ -3,8 +3,10 @@ package com.nevermore.walkietalkie.server;
 import com.nevermore.walkietalkie.models.ChatChannel;
 import com.nevermore.walkietalkie.models.VoiceChannel;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.io.IOException;
-import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -22,14 +24,14 @@ public class ServerThread extends Thread {
     List<VoiceChannel> voiceChannels = new ArrayList<>();
     ServerService parent;
 
-    public ServerThread(ServerService parr) {
-        parent=parr;
+    public ServerThread(ServerService parent) {
+        this.parent = parent;
         initSocket();
         initChannels();
     }
 
     private void initChannels() {
-        chatChannels.add(new ChatChannel((byte)0, "lol"));
+        chatChannels.add(new ChatChannel((byte) 0, "lol"));
     }
 
     private void initSocket() {
@@ -73,21 +75,30 @@ public class ServerThread extends Thread {
     }
 
     private void updateVoiceChannels() {
-        voiceChannels=parent.vs.channels;
+        voiceChannels = parent.vs.channels;
     }
 
-    public void CreateChannel(byte id,String name){
+    public void createChannel(byte id, String name){
         chatChannels.add(new ChatChannel(id,name));
-        //parent.Update();//TODO: send new serialized server data to clients
     }
 
-    public void DeleteChannel(byte id,String name){
-        chatChannels.remove(new ChatChannel(id,name));
-        //parent.Update();//TODO: send new serialized server data to clients
+    public void deleteChannel(byte id, String name){
+        chatChannels.remove(new ChatChannel(id, name));
     }
 
     public void kill() {
         running = false;
+    }
+
+    public JSONArray serialize() throws JSONException {
+        JSONArray ret = new JSONArray();
+        for (ChatChannel c : chatChannels) {
+            ret.put(c.serialize());
+        }
+        for (VoiceChannel c : voiceChannels) {
+            ret.put(c.serialize());
+        }
+        return ret;
     }
 
     @Override

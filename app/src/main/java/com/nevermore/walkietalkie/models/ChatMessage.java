@@ -9,7 +9,7 @@ public class ChatMessage {
     public String message;
     Date timestamp;
 
-    public ChatMessage(byte id, String msg, String sender) {
+    public ChatMessage(byte id, String sender, String msg) {
         this.channelId = id;
         this.message = msg;
         this.sender = sender;
