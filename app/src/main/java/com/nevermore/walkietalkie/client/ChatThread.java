@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class ChatThread extends Thread {
 
     private boolean running = true;
-    private ArrayList<ChatChannel> channels;
+    private ArrayList<ChatChannel> channels = new ArrayList<>();
     private Socket socket;
     private ChatService parent;
     private BufferedReader in;
@@ -102,5 +102,4 @@ public class ChatThread extends Thread {
     public void sendMessage(byte id, String message) {
         out.println(id + Constants.DELIMITER + message);
     }
-
 }
