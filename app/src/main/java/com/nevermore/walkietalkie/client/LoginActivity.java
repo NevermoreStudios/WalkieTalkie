@@ -12,15 +12,13 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.nevermore.walkietalkie.Constants;
 import com.nevermore.walkietalkie.R;
 import com.nevermore.walkietalkie.server.ServerService;
 
 public class LoginActivity extends Activity {
 
     private EditText username, serverip;
-
-    public static final String EXTRA_USERNAME = "com.nevermore.walkietalkie.extra.username";
-    public static final String EXTRA_SERVERIP = "com.nevermore.walkietalkie.extra.serverip";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,12 +33,11 @@ public class LoginActivity extends Activity {
     }
 
     public void clickLogin(View view) {
-        // This method is called when "Connect" button is clicked
         String usernameText = username.getText().toString(),
                serveripText = serverip.getText().toString();
         Intent data = new Intent(this, ChatService.class);
-        data.putExtra(EXTRA_USERNAME, usernameText);
-        data.putExtra(EXTRA_SERVERIP, serveripText);
+        data.putExtra(Constants.EXTRA_USERNAME, usernameText);
+        data.putExtra(Constants.EXTRA_USERNAME, serveripText);
         startService(data);
         startActivity(new Intent(this,MainActivity.class));//TODO: remove this
     }
@@ -48,12 +45,12 @@ public class LoginActivity extends Activity {
     public void clickDiscover(View view) {
         String usernameText = username.getText().toString();
         Intent data = new Intent(this, DiscoveryService.class);
-        data.putExtra(EXTRA_USERNAME, usernameText);
+        data.putExtra(Constants.EXTRA_USERNAME, usernameText);
         startService(data);
     }
 
     public void clickStartserver(View view) {
-        startService(new Intent(this, ServerService.class));
+        startActivity(new Intent(this, ServerActivity.class));
     }
 
 }

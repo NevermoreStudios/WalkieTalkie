@@ -25,8 +25,8 @@ public class Client extends AsyncTask<Void, Void, Void> {
         this.socket = socket;
         this.parent = parent;
         try {
-            this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            this.out = new PrintWriter(socket.getOutputStream(), true);
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            out = new PrintWriter(socket.getOutputStream(), true);
         } catch (IOException e) {
             e.printStackTrace();
             // TODO: Error handling
@@ -69,7 +69,11 @@ public class Client extends AsyncTask<Void, Void, Void> {
                 try {
                     byte channelID = Byte.parseByte(message.substring(0, index));
                     String msg = message.substring(index);
-                    parent.sendMsg(name, channelID, msg);
+                    if(channelID < Constants.CHANNEL_DELIMITER) {
+                        parent.sendMsg(name, channelID, msg);
+                    } else {
+                        parent.sendVoiceMsg(name, channelID, msg);
+                    }
                 } catch(Exception e) {
                     e.printStackTrace();
                     // TODO: Error handling

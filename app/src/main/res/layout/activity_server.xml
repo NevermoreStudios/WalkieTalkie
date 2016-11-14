@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/server_text"
+        android:text="@string/server_text_text"
+        android:textSize="24sp"
+    />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/server_channel_input"
+        android:layout_below="@+id/server_text"
+        android:hint="@string/server_channel_input_hint"
+    />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/server_channel_confirm"
+        android:layout_below="@+id/server_channel_input"
+        android:text="@string/server_channel_confirm_text"
+        android:onClick="onChannelAdd"
+    />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/server_start"
+        android:layout_below="@+id/server_channel_confirm"
+        android:text="@string/server_start_text"
+        android:onClick="onServerStart"
+    />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/server_channel_list"
+        android:layout_below="@+id/server_start"
+    />
+
+</RelativeLayout>
