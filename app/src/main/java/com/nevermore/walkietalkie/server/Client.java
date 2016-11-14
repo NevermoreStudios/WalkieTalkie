@@ -19,7 +19,7 @@ public class Client extends AsyncTask<Void, Void, Void> {
     PrintWriter out;
     String name = null;
     ServerThread parent;
-    boolean running = true; // TODO: Add .kill() method?
+    boolean running = true;
 
     public Client(Socket socket, ServerThread parent) {
         this.socket = socket;
@@ -89,5 +89,7 @@ public class Client extends AsyncTask<Void, Void, Void> {
     public String getName() {
         return name;
     }
+
+    public void kill(){ running = false;}
 
 }
