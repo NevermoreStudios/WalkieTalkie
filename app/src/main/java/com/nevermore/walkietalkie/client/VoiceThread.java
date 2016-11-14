@@ -188,4 +188,8 @@ public class VoiceThread extends Thread {
         }
     }
 
+    public ArrayList<VoiceChannel> getChannels() {
+        return channels;
+    }
+
 }

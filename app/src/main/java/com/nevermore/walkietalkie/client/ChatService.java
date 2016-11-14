@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 
+import com.nevermore.walkietalkie.models.ChatChannel;
 import com.nevermore.walkietalkie.models.ChatMessage;
 import com.nevermore.walkietalkie.models.VoiceChannel;
 
@@ -16,8 +17,8 @@ public class ChatService extends Service {
 
     private IBinder binder = new ChatBinder();
     InetAddress serverAddress;
-    VoiceThread vt;
-    ChatThread ct;
+    public VoiceThread vt;
+    public ChatThread ct;
     String username;
     Socket connection;
 

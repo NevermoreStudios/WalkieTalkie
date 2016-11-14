@@ -1,10 +1,14 @@
 package com.nevermore.walkietalkie.client;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.speech.tts.Voice;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.MotionEvent;
@@ -15,9 +19,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.nevermore.walkietalkie.R;
+import com.nevermore.walkietalkie.models.ChatChannel;
 import com.nevermore.walkietalkie.models.ChatMessage;
+import com.nevermore.walkietalkie.models.VoiceChannel;
 
 import java.util.ArrayList;
 
@@ -39,10 +46,12 @@ public class MainActivity extends Activity {
     private EditText input;
     private ListView history;
     private ListView members;
-    private ListView chatChannels;
+    private ListView channels;
     private boolean micro = true;
-    private int chatId=1;
-    private int voiceId=-1;
+    private int chatId = 1;
+    private int voiceId = -1;
+    private ArrayList<ChatChannel> chatChannels;
+    private ArrayList<VoiceChannel> voiceChannels;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,39 +73,61 @@ public class MainActivity extends Activity {
         line = findViewById(R.id.main_view);
         history = (ListView) findViewById(R.id.main_history_list);
         members = (ListView) findViewById(R.id.main_members);
-        chatChannels = (ListView) findViewById(R.id.main_chat_list);
+        channels = (ListView) findViewById(R.id.main_chat_list);
         input = (EditText) findViewById(R.id.main_input);
         adapter = new ArrayAdapter<String>(this, R.layout.message_item, listItems);
-            history.setAdapter(adapter);
+        history.setAdapter(adapter);
         adapterMembers = new ArrayAdapter<String>(this, R.layout.channel_item, listMembers);
-            members.setAdapter(adapterMembers);
-        adapterChat = new ArrayAdapter<String>(this, R.layout.channel_item, listChat);
-            chatChannels.setAdapter(adapterChat);
+        members.setAdapter(adapterMembers);
         history.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         members.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        chatChannels.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        chatChannels.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        channels.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        channels.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                System.out.println(parent.toString());
-                System.out.println(view.toString());
-                System.out.println(position);
-                System.out.println(id);
+                channelClicked(position);
             }
         });
+        bindService(new Intent(this, ChatService.class), serviceConnection, 0);
+        fillChannels();
+        setupIntentFilter();
+    }
 
+    private void fillChannels() {
+        chatChannels = service.ct.getChannels();
+        voiceChannels = service.vt.getChannels();
+        listChat.add(getString(R.string.chat_channels));
+        for(ChatChannel c : chatChannels) {
+            listChat.add("~ " + c.getName());
+        }
+        listChat.add(getString(R.string.voice_channels));
+        for(VoiceChannel c : voiceChannels) {
+            listChat.add("~ " + c.getName());
+        }
+        adapterChat = new ArrayAdapter<String>(this, R.layout.channel_item, listChat);
+        channels.setAdapter(adapterChat);
+    }
+
+    private void setupIntentFilter() {
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Toast.makeText(MainActivity.this, "lol", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void channelClicked(int position) {
+        if(position > 0 && position < chatChannels.size()) {
+            Toast.makeText(this, chatChannels.get(position - 1).getName(), Toast.LENGTH_LONG).show();
+        } else if(position > chatChannels.size() + 1) {
+            Toast.makeText(this, voiceChannels.get(position - chatChannels.size()).getName(), Toast.LENGTH_LONG).show();
+        }
     }
 
     public void onClickSend(View view) {
-        listChat.add("Chat Channels");
-        listChat.add("random chat channel");
-        listChat.add("asdsdf");
-        listChat.add("VoiceChannel");
-        listChat.add("neki tamo voice chanel");
-        adapterChat = new ArrayAdapter<String>(this, R.layout.channel_item, listChat);
-        chatChannels.setAdapter(adapterChat);
         // This is called when send button is clicked
     }
 
@@ -112,6 +143,12 @@ public class MainActivity extends Activity {
         listItems.add("Clicked : " + clickCounter++);
         adapter = new ArrayAdapter<String>(this, R.layout.message_item, listItems);
         history.setAdapter(adapter);
+    }
+
+    public void SetChannelStatus()
+    {
+
+
     }
 
     private void hideMic() {

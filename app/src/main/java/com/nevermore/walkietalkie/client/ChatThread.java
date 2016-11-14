@@ -102,4 +102,9 @@ public class ChatThread extends Thread {
     public void sendMessage(byte id, String message) {
         out.println(id + Constants.DELIMITER + message);
     }
+
+    public ArrayList<ChatChannel> getChannels() {
+        return channels;
+    }
+
 }
