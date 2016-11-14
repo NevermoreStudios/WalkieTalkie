@@ -12,30 +12,29 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
 public class ChatThread extends Thread {
-    
-    public static final int PORT = 53729;
+
     private boolean running = true;
     private ArrayList<ChatChannel> channels = new ArrayList<>();
     private Socket socket;
     private ChatService parent;
     private BufferedReader in;
+    private PrintWriter out;
 
     public ChatThread(ChatService parent, Socket socket) {
+        this.parent = parent;
         this.socket = socket;
         try {
-            this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            out = new PrintWriter(socket.getOutputStream(), true);
         } catch (IOException e) {
             e.printStackTrace();
             // TODO: Error handling
         }
-    }
-
-    public void send(ChatMessage msg) {
-        // TODO: Implement
     }
 
     public void kill() {
@@ -60,6 +59,7 @@ public class ChatThread extends Thread {
         if(channels == null) {
             // We are receiving the server status!
             try {
+                channels = new ArrayList<>();
                 JSONArray chans = new JSONArray(msg);
                 ArrayList<VoiceChannel> vc = new ArrayList<>();
                 for(int i = 0; i < chans.length(); ++i) {
@@ -99,4 +99,7 @@ public class ChatThread extends Thread {
         // TODO: Implement
     }
 
+    public void sendMessage(byte id, String message) {
+        out.println(id + Constants.DELIMITER + message);
+    }
 }

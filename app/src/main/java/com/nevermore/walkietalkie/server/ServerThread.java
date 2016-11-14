@@ -1,5 +1,6 @@
 package com.nevermore.walkietalkie.server;
 
+import com.nevermore.walkietalkie.Constants;
 import com.nevermore.walkietalkie.models.ChatChannel;
 import com.nevermore.walkietalkie.models.VoiceChannel;
 
@@ -14,8 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ServerThread extends Thread {
-    public static final int CHAT_PORT = 53731;
-    public static final int VOICE_PORT = 53732;
     boolean running = true;
     ServerSocket server;
     DatagramSocket voiceServer;
@@ -36,8 +35,8 @@ public class ServerThread extends Thread {
 
     private void initSocket() {
         try {
-            server = new ServerSocket(CHAT_PORT);
-            voiceServer = new DatagramSocket(VOICE_PORT);
+            server = new ServerSocket(Constants.CHAT_SERVER_PORT);
+            voiceServer = new DatagramSocket(Constants.VOICE_SERVER_PORT);
         } catch(IOException e) {
             e.printStackTrace();
             // TODO: Error handling
