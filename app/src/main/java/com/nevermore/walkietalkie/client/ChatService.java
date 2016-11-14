@@ -4,13 +4,17 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+import android.util.Log;
 
+import com.nevermore.walkietalkie.Constants;
 import com.nevermore.walkietalkie.models.ChatChannel;
 import com.nevermore.walkietalkie.models.ChatMessage;
 import com.nevermore.walkietalkie.models.VoiceChannel;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 public class ChatService extends Service {
@@ -31,16 +35,14 @@ public class ChatService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        ct = new ChatThread(this, intent.getStringExtra(Constants.EXTRA_SERVERIP));
+        ct.start();
         return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     public IBinder onBind(Intent intent) {
         return binder;
-    }
-
-    private void createChatThread() {
-        ct = new ChatThread(this, connection);
     }
 
     public void createVoiceThread(ArrayList<VoiceChannel> channels) {

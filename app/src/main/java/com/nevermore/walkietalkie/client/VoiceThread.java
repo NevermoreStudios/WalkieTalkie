@@ -6,23 +6,18 @@ import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder;
 
-import com.nevermore.walkietalkie.client.MainActivity;
-import com.nevermore.walkietalkie.models.ChatChannel;
+import com.nevermore.walkietalkie.Constants;
 import com.nevermore.walkietalkie.models.ChatMessage;
 import com.nevermore.walkietalkie.models.VoiceChannel;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.DatagramChannel;
 import java.util.ArrayList;
-import java.util.List;
 
 public class VoiceThread extends Thread {
 
@@ -36,9 +31,6 @@ public class VoiceThread extends Thread {
     private ArrayList<VoiceChannel> channels;
     private DatagramChannel ioSocket;
 
-    public static final int PORT = 53730;
-    public static final int SERVER_PORT = 53732;
-
     public static final int STATUS_AVAILABLE = 0;
     public static final int STATUS_SPEAKING = 1;
     public static final int STATUS_RECORDING = 2;
@@ -50,13 +42,6 @@ public class VoiceThread extends Thread {
         init();
     }
 
-    private short bytesToShort(byte[] bytes) {
-        return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getShort();
-    }
-
-    private byte[] shortToBytes(short value) {
-        return ByteBuffer.allocate(2).order(ByteOrder.LITTLE_ENDIAN).putShort(value).array();
-    }
 
     private boolean init() {
         input = new AudioRecord(MediaRecorder.AudioSource.MIC, 44100, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, 44100);
@@ -64,7 +49,7 @@ public class VoiceThread extends Thread {
         channels = new ArrayList<VoiceChannel>();
         try {
             ioSocket = DatagramChannel.open();
-            ioSocket.socket().bind(new InetSocketAddress(PORT));
+            ioSocket.socket().bind(new InetSocketAddress(Constants.VOICE_PORT));
             ioSocket.configureBlocking(false);
         } catch (IOException e) {
             e.printStackTrace();
@@ -140,12 +125,10 @@ public class VoiceThread extends Thread {
 
     private void send(short val) {
         ByteBuffer buf = ByteBuffer.allocate(3);
-        byte[] shorter = new byte[2];
-        shorter = shortToBytes(val);
         buf.put(selected);
-        buf.put(shorter);
+        buf.putShort(val);
         try {
-            ioSocket.send(buf,new InetSocketAddress(InetAddress.getByName("255.255.255.255"),PORT));
+            ioSocket.send(buf, new InetSocketAddress(InetAddress.getByName("255.255.255.255"), Constants.VOICE_PORT));
         } catch (IOException e) {
             e.printStackTrace();
             // TODO: Error handling
@@ -165,9 +148,7 @@ public class VoiceThread extends Thread {
         }
         if(ina != null){
         if(buf.get(0) == selected) {
-            shorter[0] = buf.get(1);
-            shorter[1] = buf.get(2);
-            in[0] = bytesToShort(shorter);
+            in[0] = buf.getShort();
             output.write(in, 0, 1);
         }}
     }

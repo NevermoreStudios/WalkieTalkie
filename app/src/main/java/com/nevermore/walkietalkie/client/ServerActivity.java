@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.nevermore.walkietalkie.Constants;
+import com.nevermore.walkietalkie.R;
 import com.nevermore.walkietalkie.server.ServerService;
 
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ public class ServerActivity extends Activity {
 
     public void onChannelAdd(View v) {
         list.add(channelName.getText().toString());
+        channelName.setText("");
         refreshList();
     }
 

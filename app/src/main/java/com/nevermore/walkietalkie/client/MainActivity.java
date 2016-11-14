@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -21,6 +22,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.nevermore.walkietalkie.Constants;
 import com.nevermore.walkietalkie.R;
 import com.nevermore.walkietalkie.models.ChatChannel;
 import com.nevermore.walkietalkie.models.ChatMessage;
@@ -115,9 +117,9 @@ public class MainActivity extends Activity {
         registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Toast.makeText(MainActivity.this, "lol", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, intent.getStringExtra(Constants.EXTRA_SENDER) + ": " + intent.getStringExtra(Constants.EXTRA_MESSAGE), Toast.LENGTH_LONG).show();
             }
-        });
+        }, new IntentFilter(Constants.RECEIVE_FILTER));
     }
 
     private void channelClicked(int position) {

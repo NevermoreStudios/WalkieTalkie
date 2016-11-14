@@ -1,5 +1,7 @@
 package com.nevermore.walkietalkie.client;
 
+import android.util.Log;
+
 import com.nevermore.walkietalkie.Constants;
 import com.nevermore.walkietalkie.models.ChatChannel;
 import com.nevermore.walkietalkie.models.ChatMessage;
@@ -13,28 +15,24 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 
 public class ChatThread extends Thread {
 
     private boolean running = true;
+    private String serverAddress;
     private ArrayList<ChatChannel> channels = new ArrayList<>();
     private Socket socket;
     private ChatService parent;
     private BufferedReader in;
     private PrintWriter out;
 
-    public ChatThread(ChatService parent, Socket socket) {
+    public ChatThread(ChatService parent, String serverAddress) {
+        Log.d("ChatThread", "Started chat thread");
         this.parent = parent;
-        this.socket = socket;
-        try {
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            out = new PrintWriter(socket.getOutputStream(), true);
-        } catch (IOException e) {
-            e.printStackTrace();
-            // TODO: Error handling
-        }
+        this.serverAddress = serverAddress;
     }
 
     public void kill() {
@@ -42,6 +40,15 @@ public class ChatThread extends Thread {
     }
 
     public void run() {
+        try {
+            socket = new Socket(InetAddress.getByName(serverAddress.substring(1)), Constants.CHAT_SERVER_PORT);
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            out = new PrintWriter(socket.getOutputStream(), true);
+            Log.d("ChatThread", "Instantiated output and input");
+        } catch (IOException e) {
+            e.printStackTrace();
+            // TODO: Error handling
+        }
         while(running) {
             try {
                 String msg = in.readLine();
@@ -59,8 +66,10 @@ public class ChatThread extends Thread {
         if(channels == null) {
             // We are receiving the server status!
             try {
+                Log.d("ChatThread", "Yay server status");
                 channels = new ArrayList<>();
                 JSONArray chans = new JSONArray(msg);
+                Log.d("ChatThread", chans.toString());
                 ArrayList<VoiceChannel> vc = new ArrayList<>();
                 for(int i = 0; i < chans.length(); ++i) {
                     JSONObject obj = chans.getJSONObject(i);
@@ -73,6 +82,7 @@ public class ChatThread extends Thread {
                 }
                 parent.createVoiceThread(vc);
             } catch(JSONException e) {
+                Log.d("ChatThread", "RIP JSON");
                 e.printStackTrace();
                 // TODO: Error handling
             }

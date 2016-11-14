@@ -37,16 +37,14 @@ public class LoginActivity extends Activity {
                serveripText = serverip.getText().toString();
         Intent data = new Intent(this, ChatService.class);
         data.putExtra(Constants.EXTRA_USERNAME, usernameText);
-        data.putExtra(Constants.EXTRA_USERNAME, serveripText);
+        data.putExtra(Constants.EXTRA_SERVERIP, serveripText);
         startService(data);
-        startActivity(new Intent(this,MainActivity.class));//TODO: remove this
     }
 
     public void clickDiscover(View view) {
         String usernameText = username.getText().toString();
-        Intent data = new Intent(this, DiscoveryService.class);
-        data.putExtra(Constants.EXTRA_USERNAME, usernameText);
-        startService(data);
+        new DiscoveryService(usernameText,this).execute(usernameText);
+
     }
 
     public void clickStartserver(View view) {
