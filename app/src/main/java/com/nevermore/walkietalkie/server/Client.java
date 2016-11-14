@@ -25,8 +25,8 @@ public class Client extends AsyncTask<Void, Void, Void> {
         this.socket = socket;
         this.parent = parent;
         try {
-            this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            this.out = new PrintWriter(socket.getOutputStream(), true);
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            out = new PrintWriter(socket.getOutputStream(), true);
         } catch (IOException e) {
             e.printStackTrace();
             // TODO: Error handling

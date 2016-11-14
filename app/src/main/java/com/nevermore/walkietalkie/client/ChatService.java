@@ -4,8 +4,8 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
-import android.widget.Toast;
 
+import com.nevermore.walkietalkie.models.ChatMessage;
 import com.nevermore.walkietalkie.models.VoiceChannel;
 
 import java.net.InetAddress;
@@ -30,8 +30,6 @@ public class ChatService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        System.out.println(intent.getStringExtra(LoginActivity.EXTRA_USERNAME));
-        System.out.println(intent.getStringExtra("adlsakjdkauidhaksljdhsa"));
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -48,8 +46,12 @@ public class ChatService extends Service {
         vt = new VoiceThread(this, channels);
     }
 
+    public void sendChatMsg(byte id, String message) {
+        ct.sendMessage(id, message);
+    }
+
     public void sendVoiceMsg(byte id, String sender, String message) {
-        // TODO: Implement
+        vt.tcpMsg(new ChatMessage(id, sender, message));
     }
 
     public Socket getConnection() {
