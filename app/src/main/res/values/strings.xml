@@ -10,4 +10,8 @@
     <string name="members">Members</string>
     <string name="chat_channels">Chat Channels</string>
     <string name="voice_channels">Voice Channels</string>
+    <string name="server_text_text">Enter channel name and press the button</string>
+    <string name="server_channel_input_hint">Channel Name</string>
+    <string name="server_channel_confirm_text">Create channel</string>
+    <string name="server_start_text">Start server</string>
 </resources>

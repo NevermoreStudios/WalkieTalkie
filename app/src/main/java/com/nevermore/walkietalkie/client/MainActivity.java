@@ -52,6 +52,7 @@ public class MainActivity extends Activity {
     private int voiceId = -1;
     private ArrayList<ChatChannel> chatChannels;
     private ArrayList<VoiceChannel> voiceChannels;
+    private int state;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,27 +129,29 @@ public class MainActivity extends Activity {
     }
 
     public void onClickSend(View view) {
-        // This is called when send button is clicked
+        service.sendChatMsg((byte)chatId, input.getText().toString());
+        input.setText("");
     }
 
     private void onClickVoice() {
-        // This is called when voice button is clicked
+        if(state == service.vt.STATUS_AVAILABLE)
+            service.vt.startRec();
     }
 
     private void onReleaseVoice() {
-        // This is called when voice button is clicked
+        if(state == service.vt.STATUS_RECORDING)
+            service.vt.stopRec();
     }
 
     public void messageRecieved(ChatMessage message) {
-        listItems.add("Clicked : " + clickCounter++);
+        listItems.add(message.getSender().toString() == username ? "I" : message.getSender().toString() + ": " + message.getMessage().toString());
         adapter = new ArrayAdapter<String>(this, R.layout.message_item, listItems);
         history.setAdapter(adapter);
     }
 
-    public void SetChannelStatus()
+    public void SetChannelStatus(int state)
     {
-
-
+        this.state = state;
     }
 
     private void hideMic() {
