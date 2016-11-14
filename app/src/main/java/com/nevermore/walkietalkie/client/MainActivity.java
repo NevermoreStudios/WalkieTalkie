@@ -9,12 +9,14 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
+import com.nevermore.walkietalkie.R;
 import com.nevermore.walkietalkie.models.ChatMessage;
 
 import java.util.ArrayList;
@@ -23,6 +25,10 @@ public class MainActivity extends Activity {
 
     private ArrayList<String> listItems = new ArrayList<>();
     private ArrayAdapter<String> adapter;
+    private ArrayList<String> listMembers = new ArrayList<>();
+    private ArrayAdapter<String> adapterMembers;
+    private ArrayList<String> listChat = new ArrayList<>();
+    private ArrayAdapter<String> adapterChat;
     private int clickCounter = 0;
     private ChatService service;
     private String username;
@@ -32,7 +38,11 @@ public class MainActivity extends Activity {
     private View line;
     private EditText input;
     private ListView history;
+    private ListView members;
+    private ListView chatChannels;
     private boolean micro = true;
+    private int chatId=1;
+    private int voiceId=-1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,13 +63,40 @@ public class MainActivity extends Activity {
         send = (Button) findViewById(R.id.main_send);
         line = findViewById(R.id.main_view);
         history = (ListView) findViewById(R.id.main_history_list);
+        members = (ListView) findViewById(R.id.main_members);
+        chatChannels = (ListView) findViewById(R.id.main_chat_list);
         input = (EditText) findViewById(R.id.main_input);
         adapter = new ArrayAdapter<String>(this, R.layout.message_item, listItems);
             history.setAdapter(adapter);
+        adapterMembers = new ArrayAdapter<String>(this, R.layout.channel_item, listMembers);
+            members.setAdapter(adapterMembers);
+        adapterChat = new ArrayAdapter<String>(this, R.layout.channel_item, listChat);
+            chatChannels.setAdapter(adapterChat);
+        history.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        members.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        chatChannels.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        chatChannels.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                System.out.println(parent.toString());
+                System.out.println(view.toString());
+                System.out.println(position);
+                System.out.println(id);
+            }
+        });
+
     }
 
     public void onClickSend(View view) {
-        messageRecieved(new ChatMessage((byte)0, "", ""));
+        listChat.add("Chat Channels");
+        listChat.add("random chat channel");
+        listChat.add("asdsdf");
+        listChat.add("VoiceChannel");
+        listChat.add("neki tamo voice chanel");
+        adapterChat = new ArrayAdapter<String>(this, R.layout.channel_item, listChat);
+        chatChannels.setAdapter(adapterChat);
         // This is called when send button is clicked
     }
 

@@ -87,7 +87,7 @@
         android:layout_gravity="left"
         android:divider="@android:color/transparent"
         android:dividerHeight="0dp"
-        android:background="#000">
+        android:background="#555">
 
         <ListView
             android:layout_width="match_parent"
@@ -95,7 +95,9 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:background="#555"/>
+            android:id="@+id/main_chat_list"
+            android:background="#555" />
+
     </RelativeLayout>
     <RelativeLayout android:id="@+id/main_right_drawer"
         android:layout_width="240dp"
@@ -103,14 +105,29 @@
         android:layout_gravity="right"
         android:divider="@android:color/transparent"
         android:dividerHeight="0dp"
-        android:background="#000">
+        android:background="#555">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/members"
+            android:id="@+id/textView3"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:textColor="#fff"
+            android:padding="10dp" />
 
         <ListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
+            android:layout_alignParentTop="false"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" 
-            android:background="#555"/>
+            android:background="#555"
+            android:layout_alignParentStart="false"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/textView3"
+            android:id="@+id/main_members"/>
     </RelativeLayout>
 </android.support.v4.widget.DrawerLayout>

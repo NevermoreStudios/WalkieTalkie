@@ -97,22 +97,22 @@ public class VoiceThread extends Thread {
     }
 
     public void changeChannel(byte id) {
-        parent.ct.send(new ChatMessage(selected, "LEVCHN", parent.username));
+        parent.ct.sendMessage(selected, "LEVCHN");
         channels.get(selected).members.remove(parent.username);
         selected = id;
-        parent.ct.send(new ChatMessage(selected, "JOICHN", parent.username));
+        parent.ct.sendMessage(selected, "JOICHN");
         channels.get(selected).members.add(parent.username);
     }
 
     public void leaveChannel() {
-        parent.ct.send(new ChatMessage(selected, "LEVCHN", parent.username));
+        parent.ct.sendMessage(selected, "LEVCHN");
         channels.get(selected).members.remove(parent.username);
     }
 
     public boolean startRec() {
         recording = true;
         input.startRecording();
-        parent.ct.send(new ChatMessage(selected, "STRSPK", parent.username));
+        parent.ct.sendMessage(selected, "STRSPK");
         getChannel().setState(STATUS_RECORDING);
         return true;
     }
@@ -120,7 +120,7 @@ public class VoiceThread extends Thread {
     public boolean stopRec() {
         recording = false;
         input.stop();
-        parent.ct.send(new ChatMessage(selected, "STPSPK", parent.username));
+        parent.ct.sendMessage(selected, "STPSPK");
         getChannel().setState(STATUS_AVAILABLE);
         return true;
     }

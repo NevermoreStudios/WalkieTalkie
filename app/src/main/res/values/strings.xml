@@ -7,4 +7,7 @@
     <string name="login_discover_text">Discover</string>
     <string name="login_startserver_text">Start server</string>
     <string name="main_input_hint">Write message</string>
+    <string name="members">Members</string>
+    <string name="chat_channels">Chat Channels</string>
+    <string name="voice_channels">Voice Channels</string>
 </resources>
