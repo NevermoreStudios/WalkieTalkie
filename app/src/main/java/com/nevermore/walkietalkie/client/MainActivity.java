@@ -60,6 +60,12 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        bindService(new Intent(this, ChatService.class), serviceConnection, Context.BIND_AUTO_CREATE);
+        initUI();
+        setupIntentFilter();
+    }
+
+    private void initUI() {
         mic = (Button) findViewById(R.id.main_voice);
         mic.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -78,10 +84,10 @@ public class MainActivity extends Activity {
         members = (ListView) findViewById(R.id.main_members);
         channels = (ListView) findViewById(R.id.main_chat_list);
         input = (EditText) findViewById(R.id.main_input);
-        adapter = new ArrayAdapter<String>(this, R.layout.message_item, listItems);
-        history.setAdapter(adapter);
-        adapterMembers = new ArrayAdapter<String>(this, R.layout.channel_item, listMembers);
+        adapter = new ArrayAdapter<>(this, R.layout.message_item, listItems);
+        adapterMembers = new ArrayAdapter<>(this, R.layout.channel_item, listMembers);
         members.setAdapter(adapterMembers);
+        history.setAdapter(adapter);
         history.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         members.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         channels.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
@@ -93,12 +99,11 @@ public class MainActivity extends Activity {
                 channelClicked(position);
             }
         });
-        bindService(new Intent(this, ChatService.class), serviceConnection, 0);
-        fillChannels();
-        setupIntentFilter();
     }
 
     private void fillChannels() {
+        System.out.println(service.ct.getChannels());
+        System.out.println(service.vt.getChannels());
         chatChannels = service.ct.getChannels();
         voiceChannels = service.vt.getChannels();
         listChat.add(getString(R.string.chat_channels));
@@ -109,7 +114,7 @@ public class MainActivity extends Activity {
         for(VoiceChannel c : voiceChannels) {
             listChat.add("~ " + c.getName());
         }
-        adapterChat = new ArrayAdapter<String>(this, R.layout.channel_item, listChat);
+        adapterChat = new ArrayAdapter<>(this, R.layout.channel_item, listChat);
         channels.setAdapter(adapterChat);
     }
 
@@ -151,7 +156,7 @@ public class MainActivity extends Activity {
         history.setAdapter(adapter);
     }
 
-    public void SetChannelStatus(int state)
+    public void setChannelStatus(int state)
     {
         this.state = state;
     }
@@ -198,8 +203,10 @@ public class MainActivity extends Activity {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder binder) {
+            System.out.println("Bound to survive akjdhskadhasjkdas");
             service = ((ChatService.ChatBinder) binder).getService();
             bound = true;
+            fillChannels();
         }
 
         @Override

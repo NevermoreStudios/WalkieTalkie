@@ -56,7 +56,7 @@ public class ServerActivity extends Activity {
 
     public void onServerStart(View v) {
         Intent i = new Intent(this, ServerService.class);
-        i.putExtra(Constants.EXTRA_CHANNELS, list);
+        i.putExtra(Constants.EXTRA_CHAT_CHANNELS, list);
         startService(i);
     }
 

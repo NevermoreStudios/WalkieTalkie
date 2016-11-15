@@ -18,19 +18,19 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class ChatThread extends Thread {
 
     private boolean running = true;
     private String serverAddress;
-    private ArrayList<ChatChannel> channels = new ArrayList<>();
+    private ArrayList<ChatChannel> channels;
     private Socket socket;
     private ChatService parent;
     private BufferedReader in;
     private PrintWriter out;
 
     public ChatThread(ChatService parent, String serverAddress) {
-        Log.d("ChatThread", "Started chat thread");
         this.parent = parent;
         this.serverAddress = serverAddress;
     }
@@ -41,10 +41,10 @@ public class ChatThread extends Thread {
 
     public void run() {
         try {
-            socket = new Socket(InetAddress.getByName(serverAddress.substring(1)), Constants.CHAT_SERVER_PORT);
+            socket = new Socket(InetAddress.getByName(serverAddress), Constants.CHAT_SERVER_PORT);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
-            Log.d("ChatThread", "Instantiated output and input");
+            out.println(parent.username);
         } catch (IOException e) {
             e.printStackTrace();
             // TODO: Error handling
@@ -63,26 +63,34 @@ public class ChatThread extends Thread {
     }
 
     private void handleMessage(String msg) {
+        System.out.println(msg);
+        System.out.println(channels);
         if(channels == null) {
             // We are receiving the server status!
             try {
-                Log.d("ChatThread", "Yay server status");
+                System.out.println("server status \\o/");
                 channels = new ArrayList<>();
-                JSONArray chans = new JSONArray(msg);
-                Log.d("ChatThread", chans.toString());
+                JSONObject chans = new JSONObject(msg);
+                System.out.println(chans.toString());
                 ArrayList<VoiceChannel> vc = new ArrayList<>();
-                for(int i = 0; i < chans.length(); ++i) {
-                    JSONObject obj = chans.getJSONObject(i);
-                    if(obj.getInt("id") < 128) {
-                        // Text channel
-                        channels.add(new ChatChannel((byte)obj.getInt("id"), obj.getString("name")));
-                    } else {
-                        vc.add(new VoiceChannel((byte)obj.getInt("id"), obj.getString("name")));
+                //for(int i = 0; i < chans.length(); ++i) {
+                    Iterator<String> keys = chans.keys();
+                    while(keys.hasNext()) {
+                        byte key = Byte.parseByte(keys.next());
+                        System.out.println(key);
+                        System.out.println(Constants.CHANNEL_DELIMITER);
+                        System.out.println(key < Constants.CHANNEL_DELIMITER);
+                        if(key < Constants.CHANNEL_DELIMITER) {
+                            // Text channel
+                            channels.add(new ChatChannel(key, chans.getString(key + "")));
+                        } else {
+                            vc.add(new VoiceChannel(key, chans.getString(key + "")));
+                        }
                     }
-                }
-                parent.createVoiceThread(vc);
+                //}
+                parent.initialize(vc);
             } catch(JSONException e) {
-                Log.d("ChatThread", "RIP JSON");
+                System.out.println("RIP JSON");
                 e.printStackTrace();
                 // TODO: Error handling
             }

@@ -51,17 +51,21 @@ public class Client extends AsyncTask<Void, Void, Void> {
 
     private void handleMessage(String message) {
         if(name == null) {
+            System.out.println("jej imamo nick " + message);
             // Client is sending us a nickname, nickname them
             name = message;
             // Send channels to the client
             try {
-                this.out.println(parent.serialize());
+                System.out.println(parent.serialize());
+                out.println(parent.serialize());
+                System.out.println("jason");
             } catch(JSONException e) {
                 // TODO: Error handling
                 e.printStackTrace();
             }
         } else {
             // Client is sending us an actual message
+            System.out.println("paradajz " + message);
             int index = message.indexOf(Constants.DELIMITER);
             if(index == -1) {
                 // TODO: Error handling

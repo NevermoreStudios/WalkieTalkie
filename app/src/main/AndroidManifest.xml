@@ -28,10 +28,6 @@
             android:name=".client.ChatService"
             android:exported="false"
         />
-        <service
-            android:name=".client.DiscoveryService"
-            android:exported="false"
-        />
     </application>
 
 </manifest>

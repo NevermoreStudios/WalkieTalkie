@@ -23,6 +23,7 @@ public class ChatService extends Service {
     InetAddress serverAddress;
     public VoiceThread vt;
     public ChatThread ct;
+    public ArrayList<String> members = new ArrayList<>();
     String username;
     Socket connection;
 
@@ -35,6 +36,7 @@ public class ChatService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        username = intent.getStringExtra(Constants.EXTRA_USERNAME);
         ct = new ChatThread(this, intent.getStringExtra(Constants.EXTRA_SERVERIP));
         ct.start();
         return super.onStartCommand(intent, flags, startId);
@@ -45,8 +47,12 @@ public class ChatService extends Service {
         return binder;
     }
 
-    public void createVoiceThread(ArrayList<VoiceChannel> channels) {
+    public void initialize(ArrayList<VoiceChannel> channels) {
         vt = new VoiceThread(this, channels);
+        vt.start();
+        Intent i = new Intent(this, MainActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(i);
     }
 
     public void sendChatMsg(byte id, String message) {

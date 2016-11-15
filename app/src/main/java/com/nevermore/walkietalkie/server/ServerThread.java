@@ -1,13 +1,12 @@
 package com.nevermore.walkietalkie.server;
 
-import android.widget.Toast;
-
 import com.nevermore.walkietalkie.Constants;
 import com.nevermore.walkietalkie.models.ChatChannel;
 import com.nevermore.walkietalkie.models.VoiceChannel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -23,18 +22,13 @@ public class ServerThread extends Thread {
     List<VoiceChannel> voiceChannels = new ArrayList<>();
     ServerService parent;
 
-    public ServerThread(ServerService parent) {
+    public ServerThread(ServerService parent, ArrayList<ChatChannel> chatChannels, ArrayList<VoiceChannel> voiceChannels) {
         this.parent = parent;
-        System.out.println("pre st");
+        this.chatChannels = chatChannels;
+        this.voiceChannels = voiceChannels;
         initSocket();
-        System.out.println("post sock st");
-        initChannels();
-        System.out.println("post chan st");
     }
 
-    private void initChannels() {
-        chatChannels.add(new ChatChannel((byte) 0, "lol"));
-    }
 
     private void initSocket() {
         try {
@@ -63,7 +57,6 @@ public class ServerThread extends Thread {
     }
 
     public void sendVoiceMsg(String sender, byte id, String msg) {
-        updateVoiceChannels();
         if(voiceChannels.get(id) != null) {
             for(String nick : voiceChannels.get(id).members) {
                 Client c = getClientByNickname(nick);
@@ -74,22 +67,17 @@ public class ServerThread extends Thread {
         }
     }
 
-    private void updateVoiceChannels() {
-        voiceChannels = parent.vs.channels;
-    }
-
-
     public void kill() {
         running = false;
     }
 
-    public JSONArray serialize() throws JSONException {
-        JSONArray ret = new JSONArray();
+    public JSONObject serialize() throws JSONException {
+        JSONObject ret = new JSONObject();
         for (ChatChannel c : chatChannels) {
-            ret.put(c.serialize());
+            ret.put(c.getId() + "", c.getName());
         }
         for (VoiceChannel c : voiceChannels) {
-            ret.put(c.serialize());
+            ret.put(c.getId() + "", c.getName());
         }
         return ret;
     }
@@ -100,8 +88,6 @@ public class ServerThread extends Thread {
             try {
                 Socket sock = server.accept();
                 if(sock != null) {
-                    System.out.println("omg neko se konektuje!!!! :)))))))");
-                    Toast.makeText(parent.getApplicationContext(), "konekcija", Toast.LENGTH_LONG).show();
                     Client client = new Client(sock, this);
                     client.execute();
                     clients.add(client);

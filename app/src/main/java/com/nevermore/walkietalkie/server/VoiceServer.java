@@ -17,8 +17,14 @@ import java.util.ArrayList;
 
 public class VoiceServer extends Thread{
 
-    public VoiceServer(ServerService parent) {
+    private boolean running = true;
+    private DatagramChannel ioSocket;
+    public ArrayList<VoiceChannel> channels = new ArrayList<>();
+    private ServerService parent;
+
+    public VoiceServer(ServerService parent, ArrayList<VoiceChannel> channels) {
         this.parent = parent;
+        this.channels = channels;
         try {
             ioSocket = DatagramChannel.open();
             ioSocket.socket().setReuseAddress(true);
@@ -28,11 +34,6 @@ public class VoiceServer extends Thread{
             e.printStackTrace();
         }
     }
-
-    private boolean running = true;
-    private DatagramChannel ioSocket;
-    public ArrayList<VoiceChannel> channels = new ArrayList<>();
-    private ServerService parent;
 
     public void kill() {
         running = false;

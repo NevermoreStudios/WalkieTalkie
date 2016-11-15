@@ -28,35 +28,22 @@ public class DiscoveryService extends AsyncTask<String, Void, String> {
     String name;
     LoginActivity parent;
 
-    public DiscoveryService(String name,LoginActivity parr)
-    {
-        this.name=name;
-        parent=parr;
-
+    public DiscoveryService(String name, LoginActivity parent) {
+        this.name = name;
+        this.parent = parent;
     }
 
 
     protected String doInBackground(String... name) {
-
+        InetSocketAddress ina = null;
+        ByteBuffer buf = ByteBuffer.allocate(3);
+        ByteBuffer buff = ByteBuffer.wrap("DISC".getBytes());
         try {
             ioSocket = DatagramChannel.open();
             ioSocket.socket().bind(new InetSocketAddress(Constants.DISCOVERY_PORT));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        ByteBuffer buf = ByteBuffer.allocate(3);
-        ByteBuffer buff = ByteBuffer.wrap("DISC".getBytes());
-        InetSocketAddress ina = null;
-        try {
-            ioSocket.send(buff,new InetSocketAddress(InetAddress.getByName("255.255.255.255"),Constants.VOICE_SERVER_PORT));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.out.println("waiting");
-        try {
-
+            ioSocket.send(buff, new InetSocketAddress(InetAddress.getByName("255.255.255.255"), Constants.VOICE_SERVER_PORT));
+            System.out.println("waiting");
             ina = (InetSocketAddress) ioSocket.receive(buf);
-
         } catch (IOException e) {
             e.printStackTrace();
             // TODO: Error handling
@@ -73,10 +60,12 @@ public class DiscoveryService extends AsyncTask<String, Void, String> {
     }
 
     protected void onPostExecute(String result) {
-        Intent data = new Intent(parent, ChatService.class);
-        data.putExtra(Constants.EXTRA_USERNAME, name);
-        data.putExtra(Constants.EXTRA_SERVERIP, result);
-        parent.startService(data);
+        if(result != null) {
+            Intent data = new Intent(parent, ChatService.class);
+            data.putExtra(Constants.EXTRA_USERNAME, name);
+            data.putExtra(Constants.EXTRA_SERVERIP, result.substring(1));
+            parent.startService(data);
+        }
     }
 
 }
