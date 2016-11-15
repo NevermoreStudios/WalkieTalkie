@@ -12,7 +12,7 @@
     <string name="voice_channels">Voice Channels</string>
     <string name="server_text_text">Enter channel name and press the button</string>
     <string name="server_channel_input_hint">Channel Name</string>
-    <string name="server_channel_confirm_text">Create channel</string>
-    <string name="server_start_text">Start server</string>
+    <string name="server_chat_channel_confirm_text">Chat channel</string>
+    <string name="server_voice_channel_confirm_text">Voice channel</string>
 </resources>
 

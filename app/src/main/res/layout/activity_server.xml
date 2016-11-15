@@ -23,28 +23,65 @@
     />
 
     <Button
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/server_channel_confirm"
+        android:id="@+id/server_chat_channel_confirm"
         android:layout_below="@+id/server_channel_input"
-        android:text="@string/server_channel_confirm_text"
-        android:onClick="onChannelAdd"
+        android:text="@string/server_chat_channel_confirm_text"
+        android:onClick="onChatChannelAdd"
+    />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/server_voice_channel_confirm"
+        android:layout_below="@+id/server_channel_input"
+        android:layout_above="@+id/server_start"
+        android:layout_toRightOf="@+id/server_chat_channel_confirm"
+        android:layout_toEndOf="@+id/server_chat_channel_confirm"
+        android:text="@string/server_voice_channel_confirm_text"
+        android:onClick="onVoiceChannelAdd"
     />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/server_start"
-        android:layout_below="@+id/server_channel_confirm"
-        android:text="@string/server_start_text"
+        android:layout_below="@+id/server_chat_channel_confirm"
+        android:text="@string/login_startserver_text"
         android:onClick="onServerStart"
+    />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/server_chat_channel_list_description"
+        android:layout_below="@+id/server_start"
+        android:text="@string/chat_channels"
+        android:textSize="24sp"
     />
 
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/server_channel_list"
-        android:layout_below="@+id/server_start"
+        android:id="@+id/server_chat_channel_list"
+        android:layout_below="@+id/server_chat_channel_list_description"
+    />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/server_voice_channel_list_description"
+        android:layout_below="@+id/server_chat_channel_list"
+        android:text="@string/voice_channels"
+        android:textSize="24sp"
+    />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/server_voice_channel_list"
+        android:layout_below="@+id/server_voice_channel_list_description"
     />
 
 </RelativeLayout>

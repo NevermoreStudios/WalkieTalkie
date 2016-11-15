@@ -10,7 +10,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.nevermore.walkietalkie.Constants;
-import com.nevermore.walkietalkie.R;
 import com.nevermore.walkietalkie.server.ServerService;
 
 import java.util.ArrayList;
@@ -18,45 +17,62 @@ import java.util.ArrayList;
 public class ServerActivity extends Activity {
 
     private EditText channelName;
-    private ListView channelList;
-    private ArrayList<String> list = new ArrayList<>();
-    private ArrayAdapter<String> listAdapter;
+    private ListView chatChannelList, voiceChannelList;
+    private ArrayList<String> chatList, voiceList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_server);
         initUI();
-        refreshList();
+        refreshList(chatChannelList, chatList);
+        refreshList(voiceChannelList, voiceList);
     }
 
     private void initUI() {
         channelName = (EditText)findViewById(R.id.server_channel_input);
-        channelList = (ListView)findViewById(R.id.server_channel_list);
-        channelList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        channelList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        chatChannelList = (ListView)findViewById(R.id.server_chat_channel_list);
+        chatChannelList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        chatChannelList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                list.remove(position);
-                refreshList();
+                chatList.remove(position);
+                refreshList(chatChannelList, chatList);
+            }
+        });
+        voiceChannelList = (ListView)findViewById(R.id.server_voice_channel_list);
+        voiceChannelList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        voiceChannelList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                voiceList.remove(position);
+                refreshList(voiceChannelList, voiceList);
             }
         });
     }
 
-    private void refreshList() {
-        listAdapter = new ArrayAdapter<String>(this, R.layout.message_item, list);
-        channelList.setAdapter(listAdapter);
+    private void refreshList(ListView listView, ArrayList<String> list) {
+        listView.setAdapter(new ArrayAdapter<String>(this, R.layout.message_item, list));
     }
 
-    public void onChannelAdd(View v) {
+    private void onChannelAdd(ListView listView, ArrayList<String> list) {
         list.add(channelName.getText().toString());
         channelName.setText("");
-        refreshList();
+        refreshList(listView, list);
+    }
+
+    public void onChatChannelAdd(View v) {
+        onChannelAdd(chatChannelList, chatList);
+    }
+
+    public void onVoiceChannelAdd(View v) {
+        onChannelAdd(voiceChannelList, voiceList);
     }
 
     public void onServerStart(View v) {
         Intent i = new Intent(this, ServerService.class);
-        i.putExtra(Constants.EXTRA_CHAT_CHANNELS, list);
+        i.putExtra(Constants.EXTRA_CHAT_CHANNELS, chatList);
+        i.putExtra(Constants.EXTRA_VOICE_CHANNELS, voiceList);
         startService(i);
     }
 
