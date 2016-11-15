@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.nevermore.walkietalkie.Constants;
+import com.nevermore.walkietalkie.R;
 import com.nevermore.walkietalkie.server.ServerService;
 
 import java.util.ArrayList;
@@ -18,15 +19,20 @@ public class ServerActivity extends Activity {
 
     private EditText channelName;
     private ListView chatChannelList, voiceChannelList;
-    private ArrayList<String> chatList, voiceList = new ArrayList<>();
+    private ArrayList<String> chatList=new ArrayList<>(), voiceList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_server);
         initUI();
+        try{
         refreshList(chatChannelList, chatList);
-        refreshList(voiceChannelList, voiceList);
+        refreshList(voiceChannelList, voiceList);}
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private void initUI() {

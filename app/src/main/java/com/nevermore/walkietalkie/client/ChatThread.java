@@ -113,7 +113,7 @@ public class ChatThread extends Thread {
     }
 
     private void sendMessageUI(ChatMessage msg) {
-        // Sends the chat message to the UI
+        System.out.println(msg.getSender()+" : "+msg.getMessage());
         // TODO: Implement
     }
 
