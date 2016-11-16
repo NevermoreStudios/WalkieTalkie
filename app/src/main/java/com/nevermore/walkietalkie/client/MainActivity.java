@@ -9,7 +9,6 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.speech.tts.Voice;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.MotionEvent;
@@ -50,19 +49,33 @@ public class MainActivity extends Activity {
     private ListView members;
     private ListView channels;
     private boolean micro = true;
-    private int chatId = 1;
+    private int chatId = 0;
     private int voiceId = -1;
     private ArrayList<ChatChannel> chatChannels;
     private ArrayList<VoiceChannel> voiceChannels;
     private int state;
+    private ArrayList<ArrayList<String>> channelHistory= new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        username= getIntent().getStringExtra(Constants.EXTRA_USERNAME);
         bindService(new Intent(this, ChatService.class), serviceConnection, Context.BIND_AUTO_CREATE);
         initUI();
         setupIntentFilter();
+        updateMic();
+    }
+
+    private void updateMic() {
+        if(voiceId==-1)
+        {
+            hideMic();
+        }
+        else
+        {
+            showMic();
+        }
     }
 
     private void initUI() {
@@ -109,6 +122,7 @@ public class MainActivity extends Activity {
         listChat.add(getString(R.string.chat_channels));
         for(ChatChannel c : chatChannels) {
             listChat.add("~ " + c.getName());
+            channelHistory.add(new ArrayList<String>());
         }
         listChat.add(getString(R.string.voice_channels));
         for(VoiceChannel c : voiceChannels) {
@@ -122,16 +136,35 @@ public class MainActivity extends Activity {
         registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Toast.makeText(MainActivity.this, intent.getStringExtra(Constants.EXTRA_SENDER) + ": " + intent.getStringExtra(Constants.EXTRA_MESSAGE), Toast.LENGTH_LONG).show();
+                //Toast.makeText(MainActivity.this, intent.getStringExtra(Constants.EXTRA_SENDER) + ": " + intent.getStringExtra(Constants.EXTRA_MESSAGE), Toast.LENGTH_LONG).show();
+                if(username.equals(intent.getStringExtra(Constants.EXTRA_SENDER)))
+                {
+                    channelHistory.get((int)intent.getByteExtra(Constants.EXTRA_CHANNEL, (byte) 1)).add(getString(R.string.ME)+ ": " + intent.getStringExtra(Constants.EXTRA_MESSAGE));
+                }
+                else
+                {
+                    channelHistory.get((int)intent.getByteExtra(Constants.EXTRA_CHANNEL, (byte) 1)).add( intent.getStringExtra(Constants.EXTRA_SENDER)+ ": " + intent.getStringExtra(Constants.EXTRA_MESSAGE));
+                }
+
+                updateHistory();
             }
         }, new IntentFilter(Constants.RECEIVE_FILTER));
     }
 
+    private void updateHistory()
+    {
+        adapter = new ArrayAdapter<String>(MainActivity.this, R.layout.message_item,channelHistory.get(chatId));
+        history.setAdapter(adapter);
+    }
+
     private void channelClicked(int position) {
-        if(position > 0 && position < chatChannels.size()) {
-            Toast.makeText(this, chatChannels.get(position - 1).getName(), Toast.LENGTH_LONG).show();
+        if(position > 0 && position < chatChannels.size()+1) {
+            chatId=position-1;
+            updateHistory();
         } else if(position > chatChannels.size() + 1) {
-            Toast.makeText(this, voiceChannels.get(position - chatChannels.size()).getName(), Toast.LENGTH_LONG).show();
+            if(voiceId == position - chatChannels.size()-2){voiceId=-1;}
+            else{voiceId=position - chatChannels.size()-2;}
+            Toast.makeText(this, voiceId, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -150,11 +183,6 @@ public class MainActivity extends Activity {
             service.vt.stopRec();
     }
 
-    public void messageRecieved(ChatMessage message) {
-        listItems.add(message.getSender().toString() == username ? "I" : message.getSender().toString() + ": " + message.getMessage().toString());
-        adapter = new ArrayAdapter<String>(this, R.layout.message_item, listItems);
-        history.setAdapter(adapter);
-    }
 
     public void setChannelStatus(int state)
     {
@@ -207,6 +235,7 @@ public class MainActivity extends Activity {
             service = ((ChatService.ChatBinder) binder).getService();
             bound = true;
             fillChannels();
+            updateHistory();
         }
 
         @Override

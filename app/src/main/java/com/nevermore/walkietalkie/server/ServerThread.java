@@ -1,5 +1,7 @@
 package com.nevermore.walkietalkie.server;
 
+import android.provider.Settings;
+
 import com.nevermore.walkietalkie.Constants;
 import com.nevermore.walkietalkie.models.ChatChannel;
 import com.nevermore.walkietalkie.models.VoiceChannel;
@@ -49,7 +51,7 @@ public class ServerThread extends Thread {
 
     private Client getClientByNickname(String nick) {
         for(Client c : clients) {
-            if(nick.equals(c.getName())) {
+            if(nick.equals(c.getNick())) {
                 return c;
             }
         }
@@ -57,7 +59,7 @@ public class ServerThread extends Thread {
     }
 
     public void sendVoiceMsg(String sender, byte id, String msg) {
-        if(voiceChannels.get(id) != null) {
+        if(voiceChannels.get(id - 1 - Constants.CHANNEL_DELIMITER) != null) {
             for(String nick : voiceChannels.get(id).members) {
                 Client c = getClientByNickname(nick);
                 if(c != null) {
@@ -88,9 +90,11 @@ public class ServerThread extends Thread {
             try {
                 Socket sock = server.accept();
                 if(sock != null) {
+                    System.out.println("neko se konektuje");
                     Client client = new Client(sock, this);
-                    client.execute();
+                    client.start();
                     clients.add(client);
+                    System.out.println("neko se cese");
                 }
             } catch (IOException e) {
                 e.printStackTrace();

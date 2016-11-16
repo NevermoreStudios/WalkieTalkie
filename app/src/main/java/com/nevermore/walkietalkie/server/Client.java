@@ -1,6 +1,7 @@
 package com.nevermore.walkietalkie.server;
 
 import android.os.AsyncTask;
+import android.provider.Settings;
 
 import com.nevermore.walkietalkie.Constants;
 
@@ -12,7 +13,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class Client extends AsyncTask<Void, Void, Void> {
+public class Client extends Thread {
 
     Socket socket;
     BufferedReader in;
@@ -34,7 +35,8 @@ public class Client extends AsyncTask<Void, Void, Void> {
     }
 
     @Override
-    protected Void doInBackground(Void... params) {
+    public void run() {
+        System.out.println("client runing");
         while(running) {
             try {
                 String msg = in.readLine();
@@ -46,10 +48,11 @@ public class Client extends AsyncTask<Void, Void, Void> {
                 // TODO: Error handling
             }
         }
-        return null;
     }
 
     private void handleMessage(String message) {
+        System.out.println(this.toString());
+        System.out.println(message);
         if(name == null) {
             System.out.println("jej imamo nick " + message);
             // Client is sending us a nickname, nickname them
@@ -65,14 +68,13 @@ public class Client extends AsyncTask<Void, Void, Void> {
             }
         } else {
             // Client is sending us an actual message
-            System.out.println("paradajz " + message);
             int index = message.indexOf(Constants.DELIMITER);
             if(index == -1) {
                 // TODO: Error handling
             } else {
                 try {
                     byte channelID = Byte.parseByte(message.substring(0, index));
-                    String msg = message.substring(index);
+                    String msg = message.substring(index + 1);
                     if(channelID < Constants.CHANNEL_DELIMITER) {
                         parent.sendMsg(name, channelID, msg);
                     } else {
@@ -87,10 +89,10 @@ public class Client extends AsyncTask<Void, Void, Void> {
     }
 
     public void sendMsg(String sender, byte id, String msg) {
-        this.out.println(id + Constants.DELIMITER + sender + Constants.DELIMITER + msg);
+        out.println(id + Constants.DELIMITER + sender + Constants.DELIMITER + msg);
     }
 
-    public String getName() {
+    public String getNick() {
         return name;
     }
 

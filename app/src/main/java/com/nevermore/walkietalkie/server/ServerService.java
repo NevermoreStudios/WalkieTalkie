@@ -40,7 +40,7 @@ public class ServerService extends Service {
             chatChannelsP.add(new ChatChannel((byte)i, chatChannels.get(i)));
         }
         for(int i = 0; i < voiceChannels.size(); ++i) {
-            voiceChannelsP.add(new VoiceChannel((byte)(i + Constants.CHANNEL_DELIMITER), chatChannels.get(i)));
+            voiceChannelsP.add(new VoiceChannel((byte)(i + Constants.CHANNEL_DELIMITER), voiceChannels.get(i)));
         }
     }
 

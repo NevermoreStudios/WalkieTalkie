@@ -14,5 +14,6 @@
     <string name="server_channel_input_hint">Channel Name</string>
     <string name="server_chat_channel_confirm_text">Chat channel</string>
     <string name="server_voice_channel_confirm_text">Voice channel</string>
+    <string name="ME">I</string>
 </resources>
 

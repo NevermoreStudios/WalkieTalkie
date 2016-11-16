@@ -17,6 +17,7 @@ public class Constants {
     public static final String EXTRA_VOICE_CHANNELS = "com.nevermore.walkietalke.extra.vchannels";
     public static final String EXTRA_MESSAGE = "com.nevermore.walkietalke.extra.message";
     public static final String EXTRA_SENDER = "com.nevermore.walkietalke.extra.sender";
+    public static final String EXTRA_CHANNEL = "com.nevermore.walkietalke.extra.channel";
     public static final String EXTRA_STATUS = "com.nevermore.walkietalke.extra.status";
     public static final int STATUS_AVAILABLE = 0;
     public static final int STATUS_SPEAKING = 1;

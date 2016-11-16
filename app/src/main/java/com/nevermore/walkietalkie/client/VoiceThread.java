@@ -46,7 +46,6 @@ public class VoiceThread extends Thread {
     private boolean init() {
         input = new AudioRecord(MediaRecorder.AudioSource.MIC, 44100, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, 44100);
         output = new AudioTrack(AudioManager.STREAM_VOICE_CALL, 44100, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, 44100, AudioTrack.MODE_STREAM);
-        channels = new ArrayList<VoiceChannel>();
         try {
             ioSocket = DatagramChannel.open();
             ioSocket.socket().bind(new InetSocketAddress(Constants.VOICE_PORT));

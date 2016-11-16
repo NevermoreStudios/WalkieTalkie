@@ -19,20 +19,18 @@ public class ServerActivity extends Activity {
 
     private EditText channelName;
     private ListView chatChannelList, voiceChannelList;
-    private ArrayList<String> chatList=new ArrayList<>(), voiceList = new ArrayList<>();
+    private ArrayList<String> chatList = new ArrayList<>(), voiceList = new ArrayList<>();
+    String username,serverip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_server);
         initUI();
-        try{
         refreshList(chatChannelList, chatList);
-        refreshList(voiceChannelList, voiceList);}
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+        refreshList(voiceChannelList, voiceList);
+        username=getIntent().getStringExtra(Constants.EXTRA_USERNAME);
+        serverip=getIntent().getStringExtra(Constants.EXTRA_SERVERIP);
     }
 
     private void initUI() {
@@ -80,6 +78,10 @@ public class ServerActivity extends Activity {
         i.putExtra(Constants.EXTRA_CHAT_CHANNELS, chatList);
         i.putExtra(Constants.EXTRA_VOICE_CHANNELS, voiceList);
         startService(i);
+        Intent data = new Intent(this, ChatService.class);
+        data.putExtra(Constants.EXTRA_USERNAME, username);
+        data.putExtra(Constants.EXTRA_SERVERIP, serverip);
+        startService(data);
     }
 
 }

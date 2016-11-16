@@ -63,34 +63,24 @@ public class ChatThread extends Thread {
     }
 
     private void handleMessage(String msg) {
-        System.out.println(msg);
-        System.out.println(channels);
         if(channels == null) {
             // We are receiving the server status!
             try {
-                System.out.println("server status \\o/");
                 channels = new ArrayList<>();
                 JSONObject chans = new JSONObject(msg);
-                System.out.println(chans.toString());
                 ArrayList<VoiceChannel> vc = new ArrayList<>();
-                //for(int i = 0; i < chans.length(); ++i) {
-                    Iterator<String> keys = chans.keys();
-                    while(keys.hasNext()) {
-                        byte key = Byte.parseByte(keys.next());
-                        System.out.println(key);
-                        System.out.println(Constants.CHANNEL_DELIMITER);
-                        System.out.println(key < Constants.CHANNEL_DELIMITER);
-                        if(key < Constants.CHANNEL_DELIMITER) {
-                            // Text channel
-                            channels.add(new ChatChannel(key, chans.getString(key + "")));
-                        } else {
-                            vc.add(new VoiceChannel(key, chans.getString(key + "")));
-                        }
+                Iterator<String> keys = chans.keys();
+                while(keys.hasNext()) {
+                    byte key = Byte.parseByte(keys.next());
+                    if(key < Constants.CHANNEL_DELIMITER) {
+                        // Text channel
+                        channels.add(new ChatChannel(key, chans.getString(key + "")));
+                    } else {
+                        vc.add(new VoiceChannel(key, chans.getString(key + "")));
                     }
-                //}
+                }
                 parent.initialize(vc);
             } catch(JSONException e) {
-                System.out.println("RIP JSON");
                 e.printStackTrace();
                 // TODO: Error handling
             }
@@ -101,7 +91,7 @@ public class ChatThread extends Thread {
                 byte id = Byte.parseByte(split[0]);
                 if(id < Constants.CHANNEL_DELIMITER) {
                     // Chat message
-                    sendMessageUI(new ChatMessage(id, split[1], split[2]));
+                    parent.broadcastMessage(id, split[1], split[2]);
                 } else {
                     // Voice message
                     parent.sendVoiceMsg(id, split[1], split[2]);
@@ -110,11 +100,6 @@ public class ChatThread extends Thread {
                 // TODO: Error handling
             }
         }
-    }
-
-    private void sendMessageUI(ChatMessage msg) {
-        System.out.println(msg.getSender()+" : "+msg.getMessage());
-        // TODO: Implement
     }
 
     public void sendMessage(byte id, String message) {

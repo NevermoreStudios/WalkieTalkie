@@ -51,6 +51,7 @@ public class ChatService extends Service {
         vt = new VoiceThread(this, channels);
         vt.start();
         Intent i = new Intent(this, MainActivity.class);
+        i.putExtra(Constants.EXTRA_USERNAME,username);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
     }
@@ -61,6 +62,14 @@ public class ChatService extends Service {
 
     public void sendVoiceMsg(byte id, String sender, String message) {
         vt.tcpMsg(new ChatMessage(id, sender, message));
+    }
+
+    public void broadcastMessage(byte id, String sender, String msg) {
+        Intent i = new Intent(Constants.RECEIVE_FILTER);
+        i.putExtra(Constants.EXTRA_MESSAGE, msg);
+        i.putExtra(Constants.EXTRA_SENDER, sender);
+        i.putExtra(Constants.EXTRA_CHANNEL, id);
+        sendBroadcast(i);
     }
 
     public Socket getConnection() {

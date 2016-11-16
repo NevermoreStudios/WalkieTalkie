@@ -48,7 +48,11 @@ public class LoginActivity extends Activity {
     }
 
     public void clickStartserver(View view) {
-        startActivity(new Intent(this, ServerActivity.class));
+        Intent data = new Intent(this, ServerActivity.class);
+        String usernameText = username.getText().toString();
+        data.putExtra(Constants.EXTRA_USERNAME, usernameText);
+        data.putExtra(Constants.EXTRA_SERVERIP, "127.0.0.1");
+        startActivity(data);
     }
 
 }
