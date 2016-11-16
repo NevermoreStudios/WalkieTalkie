@@ -149,6 +149,12 @@ public class MainActivity extends Activity {
                 updateHistory();
             }
         }, new IntentFilter(Constants.RECEIVE_FILTER));
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                setChannelStatus(intent.getIntExtra(Constants.EXTRA_STATUS,Constants.STATUS_AVAILABLE));
+            }
+        }, new IntentFilter(Constants.STATUS_FILTER));
     }
 
     private void updateHistory()
@@ -162,9 +168,13 @@ public class MainActivity extends Activity {
             chatId=position-1;
             updateHistory();
         } else if(position > chatChannels.size() + 1) {
-            if(voiceId == position - chatChannels.size()-2){voiceId=-1;}
-            else{voiceId=position - chatChannels.size()-2;}
-            Toast.makeText(this, voiceId, Toast.LENGTH_LONG).show();
+            try{
+                if(voiceId == position - chatChannels.size()-1){voiceId=-1;}
+                else{voiceId=position - chatChannels.size()-1;}
+                System.out.println(voiceId);
+                updateMic();
+            }
+            catch (Exception e){e.printStackTrace();}
         }
     }
 

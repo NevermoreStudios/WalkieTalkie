@@ -13,16 +13,19 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".client.LoginActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".client.MainActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:noHistory="true"/>
         <activity android:name=".client.ServerActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:noHistory="true"/>
         <service
             android:name=".server.ServerService"
             android:exported="false"

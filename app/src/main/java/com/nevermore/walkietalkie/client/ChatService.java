@@ -72,6 +72,12 @@ public class ChatService extends Service {
         sendBroadcast(i);
     }
 
+    public void broadcastStatus(int status) {
+        Intent i = new Intent(Constants.STATUS_FILTER);
+        i.putExtra(Constants.EXTRA_STATUS, status);
+        sendBroadcast(i);
+    }
+
     public Socket getConnection() {
         return connection;
     }

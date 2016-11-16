@@ -11,6 +11,7 @@ public class Constants {
     public static final String DELIMITER = "" + ((char)65535);
     public static final String RECEIVE_FILTER = "com.nevermore.walkietalkie.filter.receive";
     public static final String TOAST_FILTER = "com.nevermore.walkietalkie.filter.toast";
+    public static final String STATUS_FILTER = "com.nevermore.walkietalke.filter.status";
     public static final String EXTRA_USERNAME = "com.nevermore.walkietalke.extra.username";
     public static final String EXTRA_SERVERIP = "com.nevermore.walkietalke.extra.serverip";
     public static final String EXTRA_CHAT_CHANNELS = "com.nevermore.walkietalke.extra.cchannels";

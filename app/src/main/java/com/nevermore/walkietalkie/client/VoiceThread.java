@@ -5,6 +5,8 @@ import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder;
+import android.provider.MediaStore;
+import android.provider.Settings;
 
 import com.nevermore.walkietalkie.Constants;
 import com.nevermore.walkietalkie.models.ChatMessage;
