@@ -30,6 +30,7 @@ public class VoiceServer extends Thread{
             ioSocket.socket().setReuseAddress(true);
             ioSocket.socket().bind(new InetSocketAddress(Constants.VOICE_SERVER_PORT));
             ioSocket.configureBlocking(false);
+            ioSocket.socket().setBroadcast(true);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -47,7 +48,8 @@ public class VoiceServer extends Thread{
     }
 
     public void tcpMsg(ChatMessage msg) {
-        switch (msg.message.substring(0, 5)) {
+        System.out.println(msg.message.substring(0, 6));
+        switch (msg.message.substring(0, 6)) {
             case "STRSPK":
                 parent.st.sendVoiceMsg("", msg.getChannel(), msg.message);
                 break;
@@ -55,11 +57,12 @@ public class VoiceServer extends Thread{
                 parent.st.sendVoiceMsg("", msg.getChannel(), msg.message);
                 break;
             case "JOICHN":
-                channels.get(msg.getChannel()).members.add(msg.getSender());
+                channels.get(msg.getChannel()-Constants.CHANNEL_DELIMITER-1).members.add(msg.getSender());
                 parent.st.sendVoiceMsg(msg.getSender(), msg.getChannel(), "JOICHN");
+                System.out.println(msg.getSender()+" joined");
                 break;
             case "LEVCHN":
-                channels.get(msg.getChannel()).members.remove(msg.getSender());
+                channels.get(msg.getChannel()-Constants.CHANNEL_DELIMITER-1).members.remove(msg.getSender());
                 parent.st.sendVoiceMsg(msg.getSender(), msg.getChannel(), "LEVCHN");
                 break;
         }

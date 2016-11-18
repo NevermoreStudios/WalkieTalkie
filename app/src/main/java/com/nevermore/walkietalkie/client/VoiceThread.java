@@ -1,10 +1,13 @@
 package com.nevermore.walkietalkie.client;
 
+import android.content.Context;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder;
+import android.net.DhcpInfo;
+import android.net.wifi.WifiManager;
 import android.provider.MediaStore;
 import android.provider.Settings;
 
@@ -29,9 +32,10 @@ public class VoiceThread extends Thread {
     private AudioRecord input;
     private AudioTrack output;
     private ChatService parent;
-    private byte selected;
+    private byte selected=-1;
     private ArrayList<VoiceChannel> channels;
     private DatagramChannel ioSocket;
+    private int i=0;
 
     public static final int STATUS_AVAILABLE = 0;
     public static final int STATUS_SPEAKING = 1;
@@ -52,6 +56,7 @@ public class VoiceThread extends Thread {
             ioSocket = DatagramChannel.open();
             ioSocket.socket().bind(new InetSocketAddress(Constants.VOICE_PORT));
             ioSocket.configureBlocking(false);
+            ioSocket.socket().setBroadcast(true);
         } catch (IOException e) {
             e.printStackTrace();
             input.release();
@@ -62,58 +67,68 @@ public class VoiceThread extends Thread {
     }
 
     public void tcpMsg(ChatMessage msg) {
-        VoiceChannel channel = getChannel();
-        String s = msg.message.substring(0, 5);
+        String s = msg.message.substring(0, 6);
         if (s.equals("STRSPK")) {
+            System.out.println(msg.message.substring(6));
+            System.out.println(parent.username);
             if(msg.message.substring(6)!=parent.username){
-            channel.set((byte) STATUS_SPEAKING, msg.message.substring(6));
+            getChannel().set((byte) STATUS_SPEAKING, msg.message.substring(6));
             startSpk();
             }
         } else if (s.equals("STPSPK")) {
-            channel.set((byte) STATUS_AVAILABLE, null);
+            getChannel().set((byte) STATUS_AVAILABLE, null);
             stopSpk();
         }else if (s.equals("JOICHN") && msg.getSender() != parent.username) {
-            channels.get(msg.getChannel()).members.add(msg.getSender());
+            channels.get(msg.getChannel()-Constants.CHANNEL_DELIMITER-1).members.add(msg.getSender());
         }else if (s.equals("LEVCHN") && msg.getSender() != parent.username) {
-            channels.get(msg.getChannel()).members.remove(msg.getSender());
+            channels.get(msg.getChannel()-Constants.CHANNEL_DELIMITER-1).members.remove(msg.getSender());
         }
 
     }
 
     public VoiceChannel getChannel() {
-        return channels.get(selected);
+        return channels.get(selected-1);
     }
 
     public void changeChannel(byte id) {
-        parent.ct.sendMessage(selected, "LEVCHN");
-        channels.get(selected).members.remove(parent.username);
+        parent.ct.sendMessage((byte)(selected+Constants.CHANNEL_DELIMITER), "LEVCHN");
+        channels.get(selected-1).members.remove(parent.username);
         selected = id;
-        parent.ct.sendMessage(selected, "JOICHN");
-        channels.get(selected).members.add(parent.username);
+        parent.ct.sendMessage((byte)(selected+Constants.CHANNEL_DELIMITER), "JOICHN");
+        channels.get(selected-1).members.add(parent.username);
+    }
+
+    public void joinChannel(byte id) {
+        selected = id;
+        parent.ct.sendMessage((byte)(selected+Constants.CHANNEL_DELIMITER), "JOICHN");
+        channels.get(selected-1).members.add(parent.username);
     }
 
     public void leaveChannel() {
-        parent.ct.sendMessage(selected, "LEVCHN");
-        channels.get(selected).members.remove(parent.username);
+        parent.ct.sendMessage((byte)(selected+Constants.CHANNEL_DELIMITER), "LEVCHN");
+        channels.get(selected-1).members.remove(parent.username);
     }
 
     public boolean startRec() {
         recording = true;
         input.startRecording();
-        parent.ct.sendMessage(selected, "STRSPK");
+        parent.ct.sendMessage((byte)(selected+Constants.CHANNEL_DELIMITER), "STRSPK");
         getChannel().setState(STATUS_RECORDING);
+        parent.broadcastStatus(STATUS_RECORDING);
         return true;
     }
 
     public boolean stopRec() {
         recording = false;
         input.stop();
-        parent.ct.sendMessage(selected, "STPSPK");
+        parent.ct.sendMessage((byte)(selected+Constants.CHANNEL_DELIMITER), "STPSPK");
         getChannel().setState(STATUS_AVAILABLE);
+        parent.broadcastStatus(STATUS_AVAILABLE);
         return true;
     }
 
     private boolean startSpk() {
+        System.out.println("play");
         speaking = true;
         output.play();
         return true;
@@ -121,17 +136,24 @@ public class VoiceThread extends Thread {
 
     private boolean stopSpk() {
         speaking = false;
+        System.out.println("stop");
         output.stop();
         output.flush();
         return true;
     }
 
-    private void send(short val) {
-        ByteBuffer buf = ByteBuffer.allocate(3);
-        buf.put(selected);
-        buf.putShort(val);
+    private void send(short[] val) {
+        ByteBuffer buf = ByteBuffer.allocate(2048);
+        //buf.put(selected);
+        //System.out.println(buf.array()[0]);
+        for(int i = 0;i<1024;i++)
+        {
+            buf.putShort(val[i]);
+            System.out.print(val[i]+" ");
+        }
+        System.out.println();
         try {
-            ioSocket.send(buf, new InetSocketAddress(InetAddress.getByName("255.255.255.255"), Constants.VOICE_PORT));
+            ioSocket.send(buf, new InetSocketAddress(Constants.broadCast, Constants.VOICE_PORT));
         } catch (IOException e) {
             e.printStackTrace();
             // TODO: Error handling
@@ -139,10 +161,9 @@ public class VoiceThread extends Thread {
     }
 
     private void recieve() {
-        ByteBuffer buf = ByteBuffer.allocate(3);
+        ByteBuffer buf = ByteBuffer.allocate(2048);
         SocketAddress ina=null;
-        byte[] shorter = new byte[2];
-        short[] in = new short[1];
+        short[] in = new short[1024];
         try {
            ina= ioSocket.receive(buf);
         } catch (IOException e) {
@@ -150,10 +171,22 @@ public class VoiceThread extends Thread {
             // TODO: Error handling
         }
         if(ina != null){
-        if(buf.get(0) == selected) {
-            in[0] = buf.getShort();
-            output.write(in, 0, 1);
-        }}
+            //System.out.println(buf.array()[0]);
+        //if(buf.get(0) == selected) {
+            try{
+            for(int i =0;i<1024;i++)
+            {
+                in[i]=buf.getShort();
+                System.out.print(in[i]);
+            }
+                System.out.println();
+            System.out.println(in.length);
+            i=output.write(in,i, 1024);
+                System.out.println(i);
+            }
+            catch (Exception e){e.printStackTrace();}
+
+        }//}
     }
 
     public void kill() {
@@ -161,13 +194,18 @@ public class VoiceThread extends Thread {
     }
 
     public void run() {
-        short buff[] = new short[1];
+        short buff[] = new short[1024];
         while(running) {
             if(recording) {
-                input.read(buff, 0, 1);
-                send(buff[0]);
+                input.read(buff, 0, 1024);
+                send(buff);
             } else if(speaking) {
                 recieve();
+            }
+            try {
+                Thread.sleep(24);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }

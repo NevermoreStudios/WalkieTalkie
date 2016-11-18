@@ -1,5 +1,7 @@
 package com.nevermore.walkietalkie;
 
+import java.net.InetAddress;
+
 public class Constants {
 
     public static final int CHAT_PORT = 53729;
@@ -23,5 +25,6 @@ public class Constants {
     public static final int STATUS_AVAILABLE = 0;
     public static final int STATUS_SPEAKING = 1;
     public static final int STATUS_RECORDING = 2;
+    public static InetAddress broadCast;
 
 }

@@ -1,5 +1,6 @@
 package com.nevermore.walkietalkie.client;
 
+import android.provider.Settings;
 import android.util.Log;
 
 import com.nevermore.walkietalkie.Constants;
@@ -86,6 +87,7 @@ public class ChatThread extends Thread {
             }
         } else {
             // We are receiving a message
+            System.out.println(msg);
             String[] split = msg.split(Constants.DELIMITER);
             if(split.length == 3) {
                 byte id = Byte.parseByte(split[0]);

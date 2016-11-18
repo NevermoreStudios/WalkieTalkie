@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.provider.Settings;
 
 import com.nevermore.walkietalkie.Constants;
+import com.nevermore.walkietalkie.models.ChatMessage;
 
 import org.json.JSONException;
 
@@ -78,7 +79,8 @@ public class Client extends Thread {
                     if(channelID < Constants.CHANNEL_DELIMITER) {
                         parent.sendMsg(name, channelID, msg);
                     } else {
-                        parent.sendVoiceMsg(name, channelID, msg);
+                        System.out.println(message);
+                        parent.parent.vs.tcpMsg(new ChatMessage(channelID,name,msg));
                     }
                 } catch(Exception e) {
                     e.printStackTrace();

@@ -41,7 +41,8 @@ public class DiscoveryService extends AsyncTask<String, Void, String> {
         try {
             ioSocket = DatagramChannel.open();
             ioSocket.socket().bind(new InetSocketAddress(Constants.DISCOVERY_PORT));
-            ioSocket.send(buff, new InetSocketAddress(InetAddress.getByName("255.255.255.255"), Constants.VOICE_SERVER_PORT));
+            ioSocket.socket().setBroadcast(true);
+            ioSocket.send(buff, new InetSocketAddress(Constants.broadCast, Constants.VOICE_SERVER_PORT));
             System.out.println("waiting");
             ina = (InetSocketAddress) ioSocket.receive(buf);
         } catch (IOException e) {

@@ -60,7 +60,7 @@ public class ServerThread extends Thread {
 
     public void sendVoiceMsg(String sender, byte id, String msg) {
         if(voiceChannels.get(id - 1 - Constants.CHANNEL_DELIMITER) != null) {
-            for(String nick : voiceChannels.get(id).members) {
+            for(String nick : parent.vs.channels.get(id - Constants.CHANNEL_DELIMITER-1).members) {
                 Client c = getClientByNickname(nick);
                 if(c != null) {
                     c.sendMsg(sender, id, msg);

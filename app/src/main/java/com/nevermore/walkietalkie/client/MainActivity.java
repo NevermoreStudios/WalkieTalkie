@@ -169,10 +169,20 @@ public class MainActivity extends Activity {
             updateHistory();
         } else if(position > chatChannels.size() + 1) {
             try{
-                if(voiceId == position - chatChannels.size()-1){voiceId=-1;}
-                else{voiceId=position - chatChannels.size()-1;}
-                System.out.println(voiceId);
-                updateMic();
+                if(voiceId == position - chatChannels.size()-1){voiceId=-1;service.vt.leaveChannel();}
+                else{
+                    if(voiceId==-1){
+                        voiceId=position - chatChannels.size()-1;
+                        service.vt.joinChannel((byte)(voiceId));
+                    }
+                    else
+                    {
+                        voiceId=position - chatChannels.size()-1;
+                        service.vt.changeChannel((byte)(voiceId));
+                    }
+                }
+                    System.out.println(voiceId);
+                    updateMic();
             }
             catch (Exception e){e.printStackTrace();}
         }
@@ -196,6 +206,7 @@ public class MainActivity extends Activity {
 
     public void setChannelStatus(int state)
     {
+        System.out.println("status"+state);
         this.state = state;
     }
 
