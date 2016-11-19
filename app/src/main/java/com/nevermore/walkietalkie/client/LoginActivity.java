@@ -21,7 +21,7 @@ import com.nevermore.walkietalkie.server.ServerService;
 import java.io.IOException;
 import java.net.InetAddress;
 
-public class LoginActivity extends Activity {
+public class LoginActivity extends BaseActivity {
 
     private EditText username, serverip;
 
@@ -30,6 +30,7 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initUI();
+        initDialog(R.string.login_help);
         try {
             //Constants.broadCast=getBroadcastAddress();
             Constants.broadCast=InetAddress.getByName("255.255.255.255");
@@ -56,26 +57,37 @@ public class LoginActivity extends Activity {
     }
 
     public void clickLogin(View view) {
-        String usernameText = username.getText().toString(),
-               serveripText = serverip.getText().toString();
-        Intent data = new Intent(this, ChatService.class);
-        data.putExtra(Constants.EXTRA_USERNAME, usernameText);
-        data.putExtra(Constants.EXTRA_SERVERIP, serveripText);
-        startService(data);
+        if (username.getText().toString() != "" || serverip.getText().toString() != "") {
+            String usernameText = username.getText().toString(),
+                    serveripText = serverip.getText().toString();
+            Intent data = new Intent(this, ChatService.class);
+            data.putExtra(Constants.EXTRA_USERNAME, usernameText);
+            data.putExtra(Constants.EXTRA_SERVERIP, serveripText);
+            startService(data);
+        }else{
+            initDialog(R.string.empty);
+        }
     }
 
     public void clickDiscover(View view) {
-        String usernameText = username.getText().toString();
-        new DiscoveryService(usernameText,this).execute(usernameText);
-
+        if (username.getText().toString() != "") {
+            String usernameText = username.getText().toString();
+            new DiscoveryService(usernameText,this).execute(usernameText);
+        }else{
+            initDialog(R.string.empty);
+        }
     }
 
     public void clickStartserver(View view) {
-        Intent data = new Intent(this, ServerActivity.class);
-        String usernameText = username.getText().toString();
-        data.putExtra(Constants.EXTRA_USERNAME, usernameText);
-        data.putExtra(Constants.EXTRA_SERVERIP, "127.0.0.1");
-        startActivity(data);
+        if (username.getText().toString() != "") {
+            Intent data = new Intent(this, ServerActivity.class);
+            String usernameText = username.getText().toString();
+            data.putExtra(Constants.EXTRA_USERNAME, usernameText);
+            data.putExtra(Constants.EXTRA_SERVERIP, "127.0.0.1");
+            startActivity(data);
+        }else{
+            initDialog(R.string.empty);
+        }
     }
 
 }

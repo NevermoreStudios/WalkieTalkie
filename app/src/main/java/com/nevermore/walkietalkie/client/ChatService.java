@@ -4,28 +4,19 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
-import android.util.Log;
 
 import com.nevermore.walkietalkie.Constants;
-import com.nevermore.walkietalkie.models.ChatChannel;
 import com.nevermore.walkietalkie.models.ChatMessage;
 import com.nevermore.walkietalkie.models.VoiceChannel;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 public class ChatService extends Service {
 
     private IBinder binder = new ChatBinder();
-    InetAddress serverAddress;
+    public String username;
     public VoiceThread vt;
     public ChatThread ct;
-    public ArrayList<String> members = new ArrayList<>();
-    String username;
-    Socket connection;
 
     public class ChatBinder extends Binder {
         ChatService getService() {
@@ -78,8 +69,9 @@ public class ChatService extends Service {
         sendBroadcast(i);
     }
 
-    public Socket getConnection() {
-        return connection;
+    public void broadcastMembers() {
+        Intent i = new Intent(Constants.MEMBER_FILTER);
+        sendBroadcast(i);
     }
 
 }

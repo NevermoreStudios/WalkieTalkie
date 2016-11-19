@@ -1,8 +1,5 @@
 package com.nevermore.walkietalkie.server;
 
-import android.os.AsyncTask;
-import android.provider.Settings;
-
 import com.nevermore.walkietalkie.Constants;
 import com.nevermore.walkietalkie.models.ChatMessage;
 
@@ -37,7 +34,6 @@ public class Client extends Thread {
 
     @Override
     public void run() {
-        System.out.println("client runing");
         while(running) {
             try {
                 String msg = in.readLine();
@@ -52,17 +48,12 @@ public class Client extends Thread {
     }
 
     private void handleMessage(String message) {
-        System.out.println(this.toString());
-        System.out.println(message);
         if(name == null) {
-            System.out.println("jej imamo nick " + message);
             // Client is sending us a nickname, nickname them
             name = message;
             // Send channels to the client
             try {
-                System.out.println(parent.serialize());
                 out.println(parent.serialize());
-                System.out.println("jason");
             } catch(JSONException e) {
                 // TODO: Error handling
                 e.printStackTrace();
@@ -71,7 +62,7 @@ public class Client extends Thread {
             // Client is sending us an actual message
             int index = message.indexOf(Constants.DELIMITER);
             if(index == -1) {
-                // TODO: Error handling
+                System.out.println("An error occurred while receiving a message");
             } else {
                 try {
                     byte channelID = Byte.parseByte(message.substring(0, index));
@@ -79,7 +70,6 @@ public class Client extends Thread {
                     if(channelID < Constants.CHANNEL_DELIMITER) {
                         parent.sendMsg(name, channelID, msg);
                     } else {
-                        System.out.println(message);
                         parent.parent.vs.tcpMsg(new ChatMessage(channelID,name,msg));
                     }
                 } catch(Exception e) {

@@ -26,10 +26,8 @@ public class ServerService extends Service {
         initChannels(intent);
         st = new ServerThread(this, chatChannelsP, voiceChannelsP);
         st.start();
-        System.out.println("wut");
         vs = new VoiceServer(this, voiceChannelsP);
         vs.start();
-        System.out.println("wut2");
         return START_STICKY;
     }
 

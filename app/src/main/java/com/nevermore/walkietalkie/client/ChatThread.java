@@ -1,14 +1,9 @@
 package com.nevermore.walkietalkie.client;
 
-import android.provider.Settings;
-import android.util.Log;
-
 import com.nevermore.walkietalkie.Constants;
 import com.nevermore.walkietalkie.models.ChatChannel;
-import com.nevermore.walkietalkie.models.ChatMessage;
 import com.nevermore.walkietalkie.models.VoiceChannel;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -87,7 +82,6 @@ public class ChatThread extends Thread {
             }
         } else {
             // We are receiving a message
-            System.out.println(msg);
             String[] split = msg.split(Constants.DELIMITER);
             if(split.length == 3) {
                 byte id = Byte.parseByte(split[0]);

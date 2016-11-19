@@ -1,26 +1,18 @@
 package com.nevermore.walkietalkie.client;
 
-import android.content.Context;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder;
-import android.net.DhcpInfo;
-import android.net.wifi.WifiManager;
-import android.provider.MediaStore;
-import android.provider.Settings;
 
 import com.nevermore.walkietalkie.Constants;
 import com.nevermore.walkietalkie.models.ChatMessage;
 import com.nevermore.walkietalkie.models.VoiceChannel;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.channels.DatagramChannel;
 import java.util.ArrayList;
 
@@ -28,19 +20,12 @@ public class VoiceThread extends Thread {
 
     private boolean running = true;
     private boolean recording = false;
-    private boolean speaking = false;
     private AudioRecord input;
     private AudioTrack output;
     private ChatService parent;
-    private byte selected=-1;
+    private byte selected = -1;
     private ArrayList<VoiceChannel> channels;
     private DatagramChannel ioSocket;
-    private int i=0;
-
-    public static final int STATUS_AVAILABLE = 0;
-    public static final int STATUS_SPEAKING = 1;
-    public static final int STATUS_RECORDING = 2;
-
 
     public VoiceThread(ChatService parent, ArrayList<VoiceChannel> channels) {
         this.parent = parent;
@@ -51,8 +36,8 @@ public class VoiceThread extends Thread {
 
     private boolean init() {
         try {
-            input = new AudioRecord(MediaRecorder.AudioSource.MIC, 44100, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, AudioRecord.getMinBufferSize ( 44100, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT));
-            output = new AudioTrack(AudioManager.STREAM_VOICE_CALL, 44100, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, AudioTrack.getMinBufferSize ( 44100,AudioFormat.CHANNEL_OUT_MONO , AudioFormat.ENCODING_PCM_16BIT), AudioTrack.MODE_STREAM);
+            input = new AudioRecord(MediaRecorder.AudioSource.MIC, Constants.SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_8BIT, Constants.SAMPLE_RATE);
+            output = new AudioTrack(AudioManager.STREAM_MUSIC, Constants.SAMPLE_RATE, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_8BIT, Constants.SAMPLE_RATE, AudioTrack.MODE_STREAM);
             ioSocket = DatagramChannel.open();
             ioSocket.socket().bind(new InetSocketAddress(Constants.VOICE_PORT));
             ioSocket.configureBlocking(false);
@@ -67,126 +52,127 @@ public class VoiceThread extends Thread {
     }
 
     public void tcpMsg(ChatMessage msg) {
-        String s = msg.message.substring(0, 6);
-        if (s.equals("STRSPK")) {
-            System.out.println(msg.message.substring(6));
-            System.out.println(parent.username);
-            if(msg.message.substring(6)!=parent.username){
-            getChannel().set((byte) STATUS_SPEAKING, msg.message.substring(6));
-            startSpk();
+        if (msg.getMessage().equals("STRSPK")) {
+            if(!msg.getSender().equals(parent.username)){
+                getChannel().set((byte) Constants.STATUS_SPEAKING, msg.getSender());
+                parent.broadcastStatus(Constants.STATUS_SPEAKING);
+                startSpk();
             }
-        } else if (s.equals("STPSPK")) {
-            getChannel().set((byte) STATUS_AVAILABLE, null);
-            stopSpk();
-        }else if (s.equals("JOICHN") && msg.getSender() != parent.username) {
-            channels.get(msg.getChannel()-Constants.CHANNEL_DELIMITER-1).members.add(msg.getSender());
-        }else if (s.equals("LEVCHN") && msg.getSender() != parent.username) {
-            channels.get(msg.getChannel()-Constants.CHANNEL_DELIMITER-1).members.remove(msg.getSender());
+        } else if (msg.getMessage().equals("STPSPK")) {
+            if(!msg.getSender().equals(parent.username)){
+                getChannel().set((byte) Constants.STATUS_AVAILABLE, null);
+                parent.broadcastStatus(Constants.STATUS_AVAILABLE);
+                stopSpk();
+            }
+        } else if (msg.getMessage().substring(0, 6).equals("JOICHN")) {
+            String[] data = msg.getMessage().substring(7).split(Constants.VOICE_DELIMITER);
+            System.out.println(data);
+            try {
+                channels.get(msg.getChannel() - Constants.CHANNEL_DELIMITER - 1).setState(Integer.parseInt(data[0]));
+                channels.get(msg.getChannel() - Constants.CHANNEL_DELIMITER - 1).members.clear();
+                for (int i = 1; i < data.length; ++i) {
+                    System.out.println(data[i]);
+                    channels.get(msg.getChannel() - Constants.CHANNEL_DELIMITER - 1).members.add(data[i]);
+                }
+                updateMembers();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (msg.getMessage().equals("LEVCHN")) {
+            channels.get(msg.getChannel() - Constants.CHANNEL_DELIMITER - 1).members.remove(msg.getSender());
+            updateMembers();
         }
+    }
 
+    private void updateMembers() {
+        parent.broadcastMembers();
     }
 
     public VoiceChannel getChannel() {
-        return channels.get(selected-1);
+        return channels.get(selected - 1);
     }
 
     public void changeChannel(byte id) {
         parent.ct.sendMessage((byte)(selected+Constants.CHANNEL_DELIMITER), "LEVCHN");
-        channels.get(selected-1).members.remove(parent.username);
         selected = id;
         parent.ct.sendMessage((byte)(selected+Constants.CHANNEL_DELIMITER), "JOICHN");
-        channels.get(selected-1).members.add(parent.username);
     }
 
     public void joinChannel(byte id) {
         selected = id;
         parent.ct.sendMessage((byte)(selected+Constants.CHANNEL_DELIMITER), "JOICHN");
-        channels.get(selected-1).members.add(parent.username);
     }
 
     public void leaveChannel() {
         parent.ct.sendMessage((byte)(selected+Constants.CHANNEL_DELIMITER), "LEVCHN");
-        channels.get(selected-1).members.remove(parent.username);
+        selected=-1;
     }
 
     public boolean startRec() {
         recording = true;
         input.startRecording();
         parent.ct.sendMessage((byte)(selected+Constants.CHANNEL_DELIMITER), "STRSPK");
-        getChannel().setState(STATUS_RECORDING);
-        parent.broadcastStatus(STATUS_RECORDING);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        getChannel().setState(Constants.STATUS_RECORDING);
+        parent.broadcastStatus(Constants.STATUS_RECORDING);
         return true;
     }
 
     public boolean stopRec() {
         recording = false;
         input.stop();
+        try {
+            Thread.sleep(1690);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         parent.ct.sendMessage((byte)(selected+Constants.CHANNEL_DELIMITER), "STPSPK");
-        getChannel().setState(STATUS_AVAILABLE);
-        parent.broadcastStatus(STATUS_AVAILABLE);
+        getChannel().setState(Constants.STATUS_AVAILABLE);
+        parent.broadcastStatus(Constants.STATUS_AVAILABLE);
         return true;
     }
 
     private boolean startSpk() {
-        System.out.println("play");
-        speaking = true;
         output.play();
         return true;
     }
 
     private boolean stopSpk() {
-        speaking = false;
-        System.out.println("stop");
-        output.stop();
+        output.pause();
         output.flush();
+        output.stop();
         return true;
     }
 
-    private void send(short[] val) {
-        ByteBuffer buf = ByteBuffer.allocate(2048);
-        //buf.put(selected);
-        //System.out.println(buf.array()[0]);
-        for(int i = 0;i<1024;i++)
-        {
-            buf.putShort(val[i]);
-            System.out.print(val[i]+" ");
-        }
-        System.out.println();
+    private void send() {
+        byte[] arr =new byte[Constants.SAMPLES];
+        arr[0]=selected;
+        input.read(arr,1,arr.length-1);
+        ByteBuffer buf = ByteBuffer.wrap(arr);
         try {
-            ioSocket.send(buf, new InetSocketAddress(Constants.broadCast, Constants.VOICE_PORT));
+            ioSocket.send(buf,new InetSocketAddress(Constants.broadCast, Constants.VOICE_PORT));
         } catch (IOException e) {
             e.printStackTrace();
-            // TODO: Error handling
         }
     }
 
     private void recieve() {
-        ByteBuffer buf = ByteBuffer.allocate(2048);
-        SocketAddress ina=null;
-        short[] in = new short[1024];
+        ByteBuffer buf = ByteBuffer.allocate(Constants.SAMPLES);
+        InetSocketAddress ina = null;
         try {
-           ina= ioSocket.receive(buf);
+            ina =(InetSocketAddress) ioSocket.receive(buf);
         } catch (IOException e) {
             e.printStackTrace();
-            // TODO: Error handling
         }
-        if(ina != null){
-            //System.out.println(buf.array()[0]);
-        //if(buf.get(0) == selected) {
-            try{
-            for(int i =0;i<1024;i++)
-            {
-                in[i]=buf.getShort();
-                System.out.print(in[i]);
+        if((ina != null) && (channels.get(selected-1).getState() != Constants.STATUS_RECORDING)) {
+            if(buf.array()[0] == selected) {
+                output.write(buf.array(), 1, buf.array().length - 1);
             }
-                System.out.println();
-            System.out.println(in.length);
-            i=output.write(in,i, 1024);
-                System.out.println(i);
-            }
-            catch (Exception e){e.printStackTrace();}
-
-        }//}
+        }
     }
 
     public void kill() {
@@ -194,16 +180,13 @@ public class VoiceThread extends Thread {
     }
 
     public void run() {
-        short buff[] = new short[1024];
         while(running) {
             if(recording) {
-                input.read(buff, 0, 1024);
-                send(buff);
-            } else if(speaking) {
-                recieve();
+                send();
             }
+            recieve();
             try {
-                Thread.sleep(24);
+                sleep(32);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

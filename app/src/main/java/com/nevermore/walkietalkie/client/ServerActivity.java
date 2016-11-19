@@ -15,7 +15,7 @@ import com.nevermore.walkietalkie.server.ServerService;
 
 import java.util.ArrayList;
 
-public class ServerActivity extends Activity {
+public class ServerActivity extends BaseActivity {
 
     private EditText channelName;
     private ListView chatChannelList, voiceChannelList;
@@ -27,6 +27,7 @@ public class ServerActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_server);
         initUI();
+        initDialog(R.string.server_help);
         refreshList(chatChannelList, chatList);
         refreshList(voiceChannelList, voiceList);
         username=getIntent().getStringExtra(Constants.EXTRA_USERNAME);
@@ -66,7 +67,11 @@ public class ServerActivity extends Activity {
     }
 
     public void onChatChannelAdd(View v) {
-        onChannelAdd(chatChannelList, chatList);
+        if (channelName.getText().toString() != "") {
+            onChannelAdd(chatChannelList, chatList);
+        }else{
+            initDialog(R.string.empty);
+        }
     }
 
     public void onVoiceChannelAdd(View v) {
