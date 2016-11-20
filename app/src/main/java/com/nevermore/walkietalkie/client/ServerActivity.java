@@ -1,6 +1,8 @@
 package com.nevermore.walkietalkie.client;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -67,26 +69,64 @@ public class ServerActivity extends BaseActivity {
     }
 
     public void onChatChannelAdd(View v) {
-        if (channelName.getText().toString() != "") {
+        if (!channelName.getText().toString().isEmpty()) {
             onChannelAdd(chatChannelList, chatList);
         }else{
-            initDialog(R.string.empty);
+            AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setTitle(R.string.error)
+                    .setMessage(R.string.empty)
+                    .setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create();
+            dialog.show();
         }
     }
 
     public void onVoiceChannelAdd(View v) {
-        onChannelAdd(voiceChannelList, voiceList);
+        if (!channelName.getText().toString().isEmpty()) {
+            onChannelAdd(voiceChannelList, voiceList);
+        }else{
+            AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setTitle(R.string.error)
+                    .setMessage(R.string.empty)
+                    .setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create();
+            dialog.show();
+        }
     }
 
     public void onServerStart(View v) {
-        Intent i = new Intent(this, ServerService.class);
-        i.putExtra(Constants.EXTRA_CHAT_CHANNELS, chatList);
-        i.putExtra(Constants.EXTRA_VOICE_CHANNELS, voiceList);
-        startService(i);
-        Intent data = new Intent(this, ChatService.class);
-        data.putExtra(Constants.EXTRA_USERNAME, username);
-        data.putExtra(Constants.EXTRA_SERVERIP, serverip);
-        startService(data);
+        if(!chatList.isEmpty()) {
+            Intent i = new Intent(this, ServerService.class);
+            i.putExtra(Constants.EXTRA_CHAT_CHANNELS, chatList);
+            i.putExtra(Constants.EXTRA_VOICE_CHANNELS, voiceList);
+            startService(i);
+            Intent data = new Intent(this, ChatService.class);
+            data.putExtra(Constants.EXTRA_USERNAME, username);
+            data.putExtra(Constants.EXTRA_SERVERIP, serverip);
+            startService(data);
+        }else {
+            AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setTitle(R.string.error)
+                    .setMessage(R.string.no_chat)
+                    .setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create();
+            dialog.show();
+        }
     }
 
 }

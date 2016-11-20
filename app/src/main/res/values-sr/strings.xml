@@ -1,28 +1,30 @@
 <resources>
     <string name="app_name">Voki-toki</string>
-    <string name="login_text_text">Upiši IP dole ili koristi  \"Otkri server\" da se povežeš na server u blizini</string>
+    <string name="login_text_text">Upiši IP servera dole ili koristi \"Otkri\" dugme da se povežeš na server u blizini</string>
     <string name="login_serverip_hint">IP servera</string>
-    <string name="login_connect_text">Povezi se</string>
-    <string name="login_username_hint">Korisiničko ime</string>
-    <string name="login_discover_text">Otkri server</string>
+    <string name="login_connect_text">Poveži se</string>
+    <string name="login_username_hint">Korisničko ime</string>
+    <string name="login_discover_text">Otkri</string>
     <string name="login_startserver_text">Pokreni server</string>
-    <string name="main_input_hint" translatable="false">Napiši poruku</string>
+    <string name="main_input_hint">Napiši poruku</string>
     <string name="members">Članovi</string>
-    <string name="chat_channels">Čet Kanali</string>
-    <string name="voice_channels" translatable="false">Glasovni Kanali</string>
-    <string name="server_text_text">Napiši ime kanala i pritisni dugme</string>
+    <string name="chat_channels">Čet kanali</string>
+    <string name="voice_channels">Glasovni kanali</string>
+    <string name="server_text_text">Upiši ime kanala i pritisni dugme</string>
     <string name="server_channel_input_hint">Ime kanala</string>
-    <string name="server_chat_channel_confirm_text">Čet Kanal</string>
+    <string name="server_chat_channel_confirm_text">Čet kanal</string>
     <string name="server_voice_channel_confirm_text">Glasovni kanal</string>
     <string name="ME">Ja</string>
     <string name="help">Pomoć</string>
-    <string name="main_help">Swipe left and right edge to see channel list and member list(respectivly). Type message and send it to your current chat channel. You can switch your current chat/voice channel from channel list. Press and hold "Mic" button to speak(start speaking once button turns grey). While button is yellow someone else is speaking and you cant speak.</string>
-    <string name="login_help">Type in your username and Server IP, and then press "Connect" button to connect to the server with desired IP(if exists). Type your username and leave Server IP empty to press "Discover" and discover available servers. Or press "Start server" to create new server(once your username as admin is set).</string>
-    <string name="server_help">Type channel name and add it as either voice or chat channel(by pressing buttons below). Once you\'re done with adding channels, press "Start server".</string>
+    <string name="main_help">Prevuci levo ili desno da vidiš listu kanala i listu članova (redom). Napiši poruku i pošalji je u trenutni čet kanal. Možeš promeniti tvoj trenutni čet/glasovni kanal iz liste kanala (da bi napustili glasovni kanal ponovo kliknite na njega). Pritisnite i držite dugme \"Mikrofon\" da bi ste pričali(Počnite govoriti nakon što dugme postane sivo). Dok je dugme žuto neko drugi priča i ne možete pričati.</string>
+    <string name="login_help">Ukucajte vaše korisničko ime i IP servera, a zatim pritisnite \"Poveži\" se da se povežete na server sa tom IP adresom. Ukucajte samo vaše korisničko ime i pritisnite \"Otkri\" da se povežete na server u blizini. Ili pritisnite \"Pokreni Server\" da pokrenete novi server(nakon što je vaše korisničko ime kao Administratora podešeno).</string>
+    <string name="server_help">Ukucajte ime kanala i dodajte ga kao Čet ili Glasovni(Uz pomoć dugmića ispod). Kada ste završili sa dodavanjem kanala, pritisnite \"Pokreni server\".</string>
     <string name="ok">Zatvori</string>
     <string name="text">Čet</string>
     <string name="voice">Glasovni</string>
     <string name="empty">Polje ne sme biti prazno</string>
     <string name="no_members">Samo za glasovne kanale</string>
+    <string name="no_chat">Server mora imati bar jedan čet kanal</string>
+    <string name="error">Pažnja</string>
 </resources>
 

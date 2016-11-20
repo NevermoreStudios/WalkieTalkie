@@ -2,8 +2,10 @@ package com.nevermore.walkietalkie.client;
 
 import android.app.Activity;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.DhcpInfo;
@@ -57,7 +59,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     public void clickLogin(View view) {
-        if (username.getText().toString() != "" || serverip.getText().toString() != "") {
+        if (!username.getText().toString().isEmpty() && !serverip.getText().toString().isEmpty()) {
             String usernameText = username.getText().toString(),
                     serveripText = serverip.getText().toString();
             Intent data = new Intent(this, ChatService.class);
@@ -65,28 +67,58 @@ public class LoginActivity extends BaseActivity {
             data.putExtra(Constants.EXTRA_SERVERIP, serveripText);
             startService(data);
         }else{
-            initDialog(R.string.empty);
+            AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setTitle(R.string.error)
+                    .setMessage(R.string.empty)
+                    .setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create();
+            dialog.show();
         }
     }
 
     public void clickDiscover(View view) {
-        if (username.getText().toString() != "") {
+        if (!username.getText().toString().isEmpty()) {
             String usernameText = username.getText().toString();
             new DiscoveryService(usernameText,this).execute(usernameText);
         }else{
-            initDialog(R.string.empty);
+            AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setTitle(R.string.error)
+                    .setMessage(R.string.empty)
+                    .setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create();
+            dialog.show();
         }
     }
 
     public void clickStartserver(View view) {
-        if (username.getText().toString() != "") {
+        if (!username.getText().toString().isEmpty()) {
             Intent data = new Intent(this, ServerActivity.class);
             String usernameText = username.getText().toString();
             data.putExtra(Constants.EXTRA_USERNAME, usernameText);
             data.putExtra(Constants.EXTRA_SERVERIP, "127.0.0.1");
             startActivity(data);
         }else{
-            initDialog(R.string.empty);
+            AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setTitle(R.string.error)
+                    .setMessage(R.string.empty)
+                    .setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create();
+            dialog.show();
         }
     }
 

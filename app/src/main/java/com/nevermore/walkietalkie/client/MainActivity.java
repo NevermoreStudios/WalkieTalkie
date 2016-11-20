@@ -1,8 +1,10 @@
 package com.nevermore.walkietalkie.client;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -205,11 +207,21 @@ public class MainActivity extends BaseActivity {
     }
 
     public void onClickSend(View view) {
-        if(input.getText().toString() != ""){
+        if(!input.getText().toString().isEmpty()){
         service.sendChatMsg((byte)chatId, input.getText().toString());
         input.setText("");
         }else{
-            initDialog(R.string.empty);
+            AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setTitle(R.string.error)
+                    .setMessage(R.string.empty)
+                    .setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create();
+            dialog.show();
         }
     }
 

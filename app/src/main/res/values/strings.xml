@@ -16,7 +16,7 @@
     <string name="server_voice_channel_confirm_text">Voice channel</string>
     <string name="ME">Me</string>
     <string name="help">Help</string>
-    <string name="main_help">Swipe left and right edge to see channel list and member list(respectivly). Type message and send it to your current chat channel. You can switch your current chat/voice channel from channel list. Press and hold "Mic" button to speak(start speaking once button turns grey). While button is yellow someone else is speaking and you cant speak.</string>
+    <string name="main_help">Swipe left and right edge to see channel list and member list(respectively). Type message and send it to your current chat channel. You can switch your current chat/voice channel from channel list. Press and hold "Mic" button to speak(start speaking once button turns grey). While button is yellow someone else is speaking and you can`t speak.</string>
     <string name="login_help">Type in your username and Server IP, and then press "Connect" button to connect to the server with desired IP(if exists). Type your username and leave Server IP empty to press "Discover" and discover available servers. Or press "Start server" to create new server(once your username as admin is set).</string>
     <string name="server_help">Type channel name and add it as either voice or chat channel(by pressing buttons below). Once you\'re done with adding channels, press "Start server".</string>
     <string name="ok">Dismiss</string>
@@ -24,5 +24,7 @@
     <string name="voice">Voice</string>
     <string name="empty">Field must not be empty</string>
     <string name="no_members">Only for Voice Channels</string>
+    <string name="no_chat">Server must have at least one chat channel</string>
+    <string name="error">Attention</string>
 </resources>
 
