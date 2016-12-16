@@ -1,0 +1,2 @@
+Voki-toki je aplikacija koja omogućava tekstualnu i glasovnu komunikaciju preko LAN mreže ili mobilnog hotspota, čak i na mestima gde internet konekcija nije dostupna.
+Aplikacija podržava više kanala za tekstualnu i glasovnu komunikaciju.

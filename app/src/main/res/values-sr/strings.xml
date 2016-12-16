@@ -1,30 +1,30 @@
 <resources>
     <string name="app_name">Voki-toki</string>
-    <string name="login_text_text">Upiši IP servera dole ili koristi \"Otkri\" dugme da se povežeš na server u blizini</string>
-    <string name="login_serverip_hint">IP servera</string>
+    <string name="login_text_text">Upišite IP servera dole ili koristite \"Otkrij\" dugme da se povežete na server u blizini</string>
+    <string name="login_serverip_hint">IP adresa servera</string>
     <string name="login_connect_text">Poveži se</string>
     <string name="login_username_hint">Korisničko ime</string>
-    <string name="login_discover_text">Otkri</string>
+    <string name="login_discover_text">Otkrij</string>
     <string name="login_startserver_text">Pokreni server</string>
-    <string name="main_input_hint">Napiši poruku</string>
+    <string name="main_input_hint">Napišite poruku</string>
     <string name="members">Članovi</string>
-    <string name="chat_channels">Čet kanali</string>
+    <string name="chat_channels">Kanali za ćaskanje</string>
     <string name="voice_channels">Glasovni kanali</string>
-    <string name="server_text_text">Upiši ime kanala i pritisni dugme</string>
+    <string name="server_text_text">Upišite ime kanala i pritisnite jedno od dugmića ispod</string>
     <string name="server_channel_input_hint">Ime kanala</string>
-    <string name="server_chat_channel_confirm_text">Čet kanal</string>
+    <string name="server_chat_channel_confirm_text">Kanal za ćaskanje</string>
     <string name="server_voice_channel_confirm_text">Glasovni kanal</string>
     <string name="ME">Ja</string>
     <string name="help">Pomoć</string>
-    <string name="main_help">Prevuci levo ili desno da vidiš listu kanala i listu članova (redom). Napiši poruku i pošalji je u trenutni čet kanal. Možeš promeniti tvoj trenutni čet/glasovni kanal iz liste kanala (da bi napustili glasovni kanal ponovo kliknite na njega). Pritisnite i držite dugme \"Mikrofon\" da bi ste pričali(Počnite govoriti nakon što dugme postane sivo). Dok je dugme žuto neko drugi priča i ne možete pričati.</string>
-    <string name="login_help">Ukucajte vaše korisničko ime i IP servera, a zatim pritisnite \"Poveži\" se da se povežete na server sa tom IP adresom. Ukucajte samo vaše korisničko ime i pritisnite \"Otkri\" da se povežete na server u blizini. Ili pritisnite \"Pokreni Server\" da pokrenete novi server(nakon što je vaše korisničko ime kao Administratora podešeno).</string>
-    <string name="server_help">Ukucajte ime kanala i dodajte ga kao Čet ili Glasovni(Uz pomoć dugmića ispod). Kada ste završili sa dodavanjem kanala, pritisnite \"Pokreni server\".</string>
+    <string name="main_help">Prevucite levo ili desno da biste videli listu kanala i članova (redom). Napišite poruku i pošaljite je u trenutni kanal za ćaskanje pritiskom na dugme za slanje. Možete promeniti Vaš trenutni tekstualni/glasovni kanal iz liste kanala (da bi napustili glasovni kanal ponovo kliknite na njega). Pritisnite i držite dugme \"Mikrofon\" da biste pričali (počnite govoriti nakon što dugme postane sivo). Dok je dugme žuto neko drugi priča i ne možete pričati.</string>
+    <string name="login_help">Ukucajte vaše korisničko ime i IP adresu servera, a zatim pritisnite \"Poveži se\" da se povežete na server sa tom IP adresom. Ukucajte samo vaše korisničko ime i pritisnite \"Otkrij\" da se povežete na server u blizini. Ili pritisnite \"Pokreni server\" da pokrenete novi server (nakon što je vaše korisničko ime kao administratora podešeno).</string>
+    <string name="server_help">Ukucajte ime kanala i dodajte ga kao tekstualni ili glasovni (pritiskanjem dugmića ispod). Kada završite sa dodavanjem kanala, pritisnite dugme \"Pokreni server\".</string>
     <string name="ok">Zatvori</string>
-    <string name="text">Čet</string>
     <string name="voice">Glasovni</string>
     <string name="empty">Polje ne sme biti prazno</string>
     <string name="no_members">Samo za glasovne kanale</string>
-    <string name="no_chat">Server mora imati bar jedan čet kanal</string>
+    <string name="no_chat">Server mora imati bar jedan kanal za ćaskanje</string>
     <string name="error">Pažnja</string>
+    <string name="text">Ćaskanje</string>
 </resources>
 

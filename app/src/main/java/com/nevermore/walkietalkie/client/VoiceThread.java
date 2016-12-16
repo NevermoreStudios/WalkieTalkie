@@ -105,7 +105,7 @@ public class VoiceThread extends Thread {
 
     public void leaveChannel() {
         parent.ct.sendMessage((byte)(selected+Constants.CHANNEL_DELIMITER), "LEVCHN");
-        selected=-1;
+        selected = -1;
     }
 
     public boolean startRec() {
