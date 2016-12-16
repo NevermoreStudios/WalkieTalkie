@@ -13,6 +13,7 @@ import com.nevermore.walkietalkie.models.VoiceChannel;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.nio.ShortBuffer;
 import java.nio.channels.DatagramChannel;
 import java.util.ArrayList;
 
@@ -36,8 +37,8 @@ public class VoiceThread extends Thread {
 
     private boolean init() {
         try {
-            input = new AudioRecord(MediaRecorder.AudioSource.MIC, Constants.SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_8BIT, Constants.SAMPLE_RATE);
-            output = new AudioTrack(AudioManager.STREAM_MUSIC, Constants.SAMPLE_RATE, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_8BIT, Constants.SAMPLE_RATE, AudioTrack.MODE_STREAM);
+            input = new AudioRecord(MediaRecorder.AudioSource.MIC, Constants.SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, Constants.SAMPLE_RATE);
+            output = new AudioTrack(AudioManager.STREAM_MUSIC, Constants.SAMPLE_RATE, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, Constants.SAMPLE_RATE, AudioTrack.MODE_STREAM);
             ioSocket = DatagramChannel.open();
             ioSocket.socket().bind(new InetSocketAddress(Constants.VOICE_PORT));
             ioSocket.configureBlocking(false);
@@ -149,10 +150,11 @@ public class VoiceThread extends Thread {
     }
 
     private void send() {
-        byte[] arr =new byte[Constants.SAMPLES];
+        short[] arr =new short[Constants.SAMPLES];
         arr[0]=selected;
         input.read(arr,1,arr.length-1);
-        ByteBuffer buf = ByteBuffer.wrap(arr);
+        ByteBuffer buf = ByteBuffer.allocate(Constants.SAMPLES*2);
+        buf.asShortBuffer().put(arr);
         try {
             ioSocket.send(buf,new InetSocketAddress(Constants.broadCast, Constants.VOICE_PORT));
         } catch (IOException e) {
@@ -161,7 +163,7 @@ public class VoiceThread extends Thread {
     }
 
     private void recieve() {
-        ByteBuffer buf = ByteBuffer.allocate(Constants.SAMPLES);
+        ByteBuffer buf = ByteBuffer.allocate(Constants.SAMPLES*2);
         InetSocketAddress ina = null;
         try {
             ina =(InetSocketAddress) ioSocket.receive(buf);
@@ -169,8 +171,9 @@ public class VoiceThread extends Thread {
             e.printStackTrace();
         }
         if((ina != null) && (channels.get(selected-1).getState() != Constants.STATUS_RECORDING)) {
-            if(buf.array()[0] == selected) {
-                output.write(buf.array(), 1, buf.array().length - 1);
+            short[] arr = buf.asShortBuffer().array();
+            if(arr[0] == selected) {
+                output.write(arr, 1, arr.length - 1);
             }
         }
     }
