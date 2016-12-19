@@ -37,8 +37,8 @@ public class VoiceThread extends Thread {
 
     private boolean init() {
         try {
-            input = new AudioRecord(MediaRecorder.AudioSource.MIC, Constants.SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, Constants.SAMPLE_RATE);
-            output = new AudioTrack(AudioManager.STREAM_MUSIC, Constants.SAMPLE_RATE, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, Constants.SAMPLE_RATE, AudioTrack.MODE_STREAM);
+            input = new AudioRecord(MediaRecorder.AudioSource.MIC, Constants.SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, Constants.SAMPLE_RATE*2);
+            output = new AudioTrack(AudioManager.STREAM_MUSIC, Constants.SAMPLE_RATE, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, Constants.SAMPLE_RATE*2, AudioTrack.MODE_STREAM);
             ioSocket = DatagramChannel.open();
             ioSocket.socket().bind(new InetSocketAddress(Constants.VOICE_PORT));
             ioSocket.configureBlocking(false);
@@ -67,12 +67,10 @@ public class VoiceThread extends Thread {
             }
         } else if (msg.getMessage().substring(0, 6).equals("JOICHN")) {
             String[] data = msg.getMessage().substring(7).split(Constants.VOICE_DELIMITER);
-            System.out.println(data);
             try {
                 channels.get(msg.getChannel() - Constants.CHANNEL_DELIMITER - 1).setState(Integer.parseInt(data[0]));
                 channels.get(msg.getChannel() - Constants.CHANNEL_DELIMITER - 1).members.clear();
                 for (int i = 1; i < data.length; ++i) {
-                    System.out.println(data[i]);
                     channels.get(msg.getChannel() - Constants.CHANNEL_DELIMITER - 1).members.add(data[i]);
                 }
                 updateMembers();
@@ -150,31 +148,31 @@ public class VoiceThread extends Thread {
     }
 
     private void send() {
-        short[] arr =new short[Constants.SAMPLES];
-        arr[0]=selected;
-        input.read(arr,1,arr.length-1);
-        ByteBuffer buf = ByteBuffer.allocate(Constants.SAMPLES*2);
-        buf.asShortBuffer().put(arr);
         try {
+            short[] arr =new short[Constants.SAMPLES];
+            arr[0]=selected;
+            input.read(arr,1,arr.length-1);
+            ByteBuffer buf = ByteBuffer.allocate(Constants.SAMPLES*2);
+            buf.asShortBuffer().put(arr);
             ioSocket.send(buf,new InetSocketAddress(Constants.broadCast, Constants.VOICE_PORT));
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private void recieve() {
+        try {
         ByteBuffer buf = ByteBuffer.allocate(Constants.SAMPLES*2);
         InetSocketAddress ina = null;
-        try {
-            ina =(InetSocketAddress) ioSocket.receive(buf);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        ina =(InetSocketAddress) ioSocket.receive(buf);
         if((ina != null) && (channels.get(selected-1).getState() != Constants.STATUS_RECORDING)) {
             short[] arr = buf.asShortBuffer().array();
             if(arr[0] == selected) {
                 output.write(arr, 1, arr.length - 1);
             }
+        }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

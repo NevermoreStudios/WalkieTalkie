@@ -159,7 +159,6 @@ public class MainActivity extends BaseActivity {
     }
 
     private void setMembers() {
-        System.out.println("adaptiranje " + voiceId);
         adapter = new ArrayAdapter<>(MainActivity.this, R.layout.channel_item, voiceId == -1 ? listMembers : service.vt.getChannel().members);
         members.setAdapter(adapter);
     }
